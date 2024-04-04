@@ -1,0 +1,40 @@
+@extends('layouts.back')
+@section('title', 'Department Information')
+@section('content')
+<section class="section">
+    <div class="section-header">
+      <h1>Manage Department</h1>
+      <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active"><a href="{{ route(Auth::user()->getDashboardRouteName()) }}">Dashboard</a></div>
+        <div class="breadcrumb-item">Departments</div>
+      </div>
+    </div>
+    <div class="section-body">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                       
+                            <h4> Departments Information</h4>
+                            <div class="card-header-form">
+                                 <a href="{{ route('departments.index') }}" class="btn btn-primary my-2"><i class="bi bi-arrow-left"></i>Back</a>
+
+                            </div>
+                          
+                    </div>
+                    <div class="card-body">
+
+                            <div class="mb-3 row">
+                                <label for="name" class="col-md-2 col-form-label text-md-end text-start"><strong> Department Name:</strong></label>
+                                <div class="col-md-4" style="line-height: 35px;">
+                                    {{ $department->DepartmentName }}
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
