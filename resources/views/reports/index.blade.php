@@ -34,13 +34,13 @@
 		</div>
 	</div>
 	<div class="section-body">
-		<div class="row justify-content-center">
+		<div class="row">
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
 						<h4>Reports</h4>
 					</div>
-					<div class="container mt-2">
+					<div class="container mt-2 ml-5">
 						<h2>Generate Report</h2>
 						<div class="row">
 							<div class="col-md-5 p-3">

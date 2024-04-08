@@ -50,7 +50,7 @@ class AuthController extends Controller
 		if($user && $Credentials['password'] == $user->password){
 			Auth::login($user);
 			$route = $this->redirectDash();
-			return redirect($route)->with('success','Congratulation!!, You are Succesfully Login');
+			return redirect($route)->with('Success','Congratulation!!, You are Succesfully Login');
 		}
 		else{
 			return back()->with('error','Username or Password is Incorrect');
