@@ -30,7 +30,7 @@
                             <div class="mb-3 row">
                                 <label for="StaffName" class="col-md-2 col-form-label text-md-end text-start"><strong>Name</strong></label>
                                 <div class="col-md-4">
-                                  <input type="text" class="form-control @error('StaffName') is-invalid @enderror" id="StaffName" name="StaffName" value="{{ $staff->StaffName }}">
+                                  <input type="text" class="form-control @error('StaffName') is-invalid @enderror" id="StaffName" name="StaffName" value="{{ $staff->StaffName }}" required>
                                     @if ($errors->has('StaffName'))
                                         <span class="text-danger">{{ $errors->first('StaffName') }}</span>
                                     @endif
@@ -40,7 +40,7 @@
                             <div class="mb-3 row">
                                 <label for="email" class="col-md-2 col-form-label text-md-end text-start"><strong>Email Address</strong></label>
                                 <div class="col-md-4">
-                                  <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $staff->email }}">
+                                  <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $staff->email }}" required>
                                     @if ($errors->has('email'))
                                         <span class="text-danger">{{ $errors->first('email') }}</span>
                                     @endif
@@ -50,7 +50,7 @@
                             <div class="mb-3 row">
                                 <label for="role" class="col-md-2 col-form-label text-md-end text-start"><strong>Roles</strong></label>
                                 <div class="col-md-4">
-                                    <select class="form-control @error('role') is-invalid @enderror select2 col-md-11" id="role" name="role">
+                                    <select class="form-control @error('role') is-invalid @enderror select2 col-md-11" id="role" name="role" required>
                                     <option>Select Role</option>
                                         @forelse ($roles as $role)                                         
                                             <option value="{{ $role->id }}" {{ (isset($staff) && $staff->role  == $role->id ) ? 'selected' : '' }}>
@@ -68,7 +68,7 @@
                             <div class="mb-3 row">
                                 <label for="password" class="col-md-2 col-form-label text-md-end text-start"><strong>Password</strong></label>
                                 <div class="col-md-4">
-                                  <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" value="{{$staff->password}}">
+                                  <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" value="{{$staff->password}}" required>
                                     @if ($errors->has('password'))
                                         <span class="text-danger">{{ $errors->first('password') }}</span>
                                     @endif
@@ -78,7 +78,7 @@
                             <div class="mb-3 row">
                                 <label for="password_confirmation" class="col-md-2 col-form-label text-md-end text-start"><strong>Confirm Password</strong></label>
                                 <div class="col-md-4">
-                                  <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{$staff->password}}">
+                                  <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{$staff->password}}" required>
                                 </div>
                             </div>
 

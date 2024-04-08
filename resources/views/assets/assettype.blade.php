@@ -29,7 +29,7 @@
                             <div class="mb-3 row">
                                 <label for="AssetTypeName" class="col-md-2 col-form-label text-md-end text-start"><strong>Asset Type:</strong></label>
                                 <div class="col-md-4">
-                                  <input type="text" class="form-control @error('AssetTypeName') is-invalid @enderror" id="AssetTypeName" name="AssetTypeName" value="{{ old('AssetTypeName') }}">
+                                  <input type="text" class="form-control @error('AssetTypeName') is-invalid @enderror" id="AssetTypeName" name="AssetTypeName" value="{{ old('AssetTypeName') }}" required>
                                     @if ($errors->has('AssetTypeName'))
                                         <span class="text-danger">{{ $errors->first('AssetTypeName') }}</span>
                                     @endif

@@ -30,7 +30,7 @@
 								<label for="AssetId">Asset ID</label>
 								<div class="col-my-12">
 
-									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$asset->AssetId}}" >
+									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$asset->AssetId}}"  required>
 
 									@if ($errors->has('AssetId'))
 									<span class="text-danger">{{ $errors->first('AssetId') }}</span>
@@ -40,7 +40,7 @@
 							<div class="form-group">
 								<label for="AssignedId">Maintenance Engineer</label>
 								<div class="col-my-12">
-									<select class="form-control @error('AssignedId') is-invalid @enderror select2" aria-label="Assignd To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To">
+									<select class="form-control @error('AssignedId') is-invalid @enderror select2" aria-label="Assignd To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To" required>
 										<option>Select</option>
 										@forelse ($staffs as $staff)
 										<option value="{{  $staff->StaffId }}">
@@ -56,15 +56,15 @@
 							</div>
 							<div class="form-group">
 								<label for="ServiceDate">Service Date</label>
-								<input type="Date" class="form-control" name="ServiceDate" id="ServiceDate" aria-describedby="ticketserviceDate">
+								<input type="Date" class="form-control" name="ServiceDate" id="ServiceDate" aria-describedby="ticketserviceDate" required>
 							</div>
 							<div class="form-group">
 								<label for="TimeSlot">Time Slot</label>
-								<input type="time" class="form-control" name="TimeSlot" id="TimeSlot" aria-describedby="tickettimeSlot">
+								<input type="time" class="form-control" name="TimeSlot" id="TimeSlot" aria-describedby="tickettimeSlot" required>
 							</div>
 							<div class="form-group">
 								<label for="Instruction">Instruction</label>
-								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!">
+								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!" required>
 							</div>
 
 							<button type="submit" class="btn btn-primary">Create Schedule</button>
