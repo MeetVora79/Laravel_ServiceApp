@@ -8,6 +8,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EngineerController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\FieldinfoController;
+use App\Http\Controllers\ReportController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -161,6 +162,13 @@ Route::group(['prefix' => 'permissions'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\PermissionController::class, 'edit'])->name('permissions.edit');
     Route::put('/update/{id}', [App\Http\Controllers\PermissionController::class, 'update'])->name('permissions.update');
     Route::delete('/destroy/{id}', [App\Http\Controllers\PermissionController::class, 'destroy'])->name('permissions.destroy');
+});
+
+
+// Routes for Report
+Route::group(['prefix' => 'reports'], function () {
+    Route::get('/statistics/view', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/statistics/generate/view/file', [ReportController::class, 'generateReport'])->name('reports.generate');
 });
 
 

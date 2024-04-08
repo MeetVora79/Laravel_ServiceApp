@@ -131,6 +131,16 @@
       </li>
       @endif
 
+      @if(auth()->user()->role == 1 || auth()->user()->role == 2)
+      <li class="menu-header">Reports & Statistics</li>
+      <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-graph-up-arrow"></i><span>Reports</span></a>
+        <ul class="dropdown-menu">
+        <li><a class="nav-link" href="{{ route('reports.index') }}">Reports & Statistics</a></li>
+        </ul>
+      </li>
+      @endif
+
       @if(auth()->user()->role == 1)
       <li class="menu-header">Permissions</li>
       <li class="dropdown">
