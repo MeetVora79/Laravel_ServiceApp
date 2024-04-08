@@ -1,5 +1,32 @@
 @extends('layouts.back')
 @section('title', 'Dashboard')
+@push('styles')
+<style>
+	.row {
+		display: flex;
+		justify-content: around;
+		flex-wrap: wrap;
+	}
+
+	.product-index {
+		flex: 1;
+		min-width: 300px;
+		box-sizing: border-box;
+		padding: 20px;
+		margin: 10px;
+		overflow: auto;
+	}
+
+	#chartContainer1,
+	#chartContainer2,
+	#chartContainer3,
+	#chartContainer4 {
+		max-width: 100%;
+		max-height: 100%;
+	}
+</style>
+
+@endpush
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -63,7 +90,7 @@
                         </div>
                         <div class="container">
                             <div class="row justify-content-around">
-                            <div class="product-index p-4" style="margin-top:20px; border-style:solid">
+                                <div class="product-index p-4" style="margin-top:20px; border-style:solid">
                                     <div id="chartContainer2" style="height: 350px; width: 450px;">
                                     </div>
                                 </div>
@@ -93,6 +120,10 @@
             data: {
                 startDate: startDate,
                 endDate: endDate
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false // Allows the chart to fit into the parent div size
             },
             dataType: 'json',
             success: function(response) {
@@ -159,7 +190,11 @@
                 legendText: "{label}",
                 indexLabel: "{label}-{y}",
                 dataPoints: <?php echo json_encode($data, JSON_NUMERIC_CHECK); ?>
-            }]
+            }],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+            }
         });
         chart.render();
 
@@ -181,7 +216,11 @@
                 toolTipContent: "<b>{label}</b>: {y}",
                 indexLabel: "{label}-{y}",
                 dataPoints: <?php echo json_encode($priorityData, JSON_NUMERIC_CHECK); ?>
-            }]
+            }],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+            }
         });
         chart.render();
 
@@ -204,7 +243,11 @@
                 toolTipContent: "<b>{label}</b>: {y}",
                 indexLabel: "{label}-{y}",
                 dataPoints: <?php echo json_encode($MaintenanceData, JSON_NUMERIC_CHECK); ?>
-            }]
+            }],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+            }
         });
         chart.render();
 

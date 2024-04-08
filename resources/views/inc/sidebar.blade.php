@@ -109,7 +109,7 @@
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-shield-plus"></i><span>Maintenance</span></a>
         <ul class="dropdown-menu">
-        <li><a class="nav-link" href="{{ route('maintenance.index') }}">Create Schedule</a></li>
+          <li><a class="nav-link" href="{{ route('maintenance.index') }}">Create Schedule</a></li>
           <li><a class="nav-link" href="{{ route('maintenance.scheduled') }}">Scheduled Maintenance</a></li>
         </ul>
       </li>
@@ -118,7 +118,7 @@
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-shield-plus"></i><span>Maintenance</span></a>
         <ul class="dropdown-menu">
-        <li><a class="nav-link" href="{{ route('myschedule') }}">My Scheduled List</a></li>
+          <li><a class="nav-link" href="{{ route('myschedule') }}">My Scheduled List</a></li>
         </ul>
       </li>
       @elseif ( auth()->user()->role == 4)
@@ -136,7 +136,7 @@
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-graph-up-arrow"></i><span>Reports</span></a>
         <ul class="dropdown-menu">
-        <li><a class="nav-link" href="{{ route('reports.index') }}">Reports & Statistics</a></li>
+          <li><a class="nav-link" href="{{ route('reports.index') }}">Reports & Statistics</a></li>
         </ul>
       </li>
       @endif

@@ -1,8 +1,29 @@
 @extends('layouts.back')
 @section('title', 'Reports & Statistics')
 @push('styles')
-<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" /> -->
+<style>
+	.row {
+		display: flex;
+		justify-content: around;
+		flex-wrap: wrap;
+	}
+	.product-index {
+		flex: 1;
+		min-width: 300px;
+		box-sizing: border-box;
+		padding: 20px;
+		margin: 10px;
+		overflow: auto;
+	}
+	#chartContainer1,
+	#chartContainer2,
+	#chartContainer3,
+	#chartContainer4 {
+		max-width: 100%;
+		max-height: 100%;
+	}
+</style>
+
 @endpush
 @section('content')
 <section class="section">
@@ -134,12 +155,12 @@
                         </div> -->
 
 						<div class="container">
-							<div class="row justify-content-around">
-								<div class="product-index p-4" style="margin-top:30px; border-style:solid">
+							<div class="row">
+								<div class="product-index" style="margin-top:30px; border-style:solid">
 									<div id="chartContainer1" style="height: 350px; width: 450px;">
 									</div>
 								</div>
-								<div class="product-index text-right p-4" style="margin-top:30px; margin-left:30px; border-style:solid">
+								<div class="product-index text-right" style="margin-top:30px; margin-left:30px; border-style:solid">
 									<div class="form-group">
 										<label for="startDate" style="font-size:medium;"><strong>From:</strong></label>
 										<input type="date" id="startDate" name="startDate" value="{{ now()->startOfYear()->toDateString() }}" required>
@@ -152,12 +173,12 @@
 							</div>
 						</div>
 						<div class="container">
-							<div class="row justify-content-around">
-								<div class="product-index p-4" style="margin-top:20px; border-style:solid">
+							<div class="row">
+								<div class="product-index " style="margin-top:20px; border-style:solid">
 									<div id="chartContainer2" style="height: 350px; width: 450px;">
 									</div>
 								</div>
-								<div class="product-index p-4" style="margin-top:20px; margin-left:30px; border-style:solid">
+								<div class="product-index" style="margin-top:20px; margin-left:30px; border-style:solid">
 									<div id="chartContainer3" style="height: 350px; width: 550px;">
 									</div>
 								</div>
@@ -183,6 +204,10 @@
 			data: {
 				startDate: startDate,
 				endDate: endDate
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false
 			},
 			dataType: 'json',
 			success: function(response) {
@@ -249,7 +274,11 @@
 				legendText: "{label}",
 				indexLabel: "{label}-{y}",
 				dataPoints: <?php echo json_encode($data, JSON_NUMERIC_CHECK); ?>
-			}]
+			}],
+			options: {
+				responsive: true,
+				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+			}
 		});
 		chart.render();
 
@@ -271,7 +300,11 @@
 				toolTipContent: "<b>{label}</b>: {y}",
 				indexLabel: "{label}-{y}",
 				dataPoints: <?php echo json_encode($priorityData, JSON_NUMERIC_CHECK); ?>
-			}]
+			}],
+			options: {
+				responsive: true,
+				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+			}
 		});
 		chart.render();
 
@@ -294,7 +327,11 @@
 				toolTipContent: "<b>{label}</b>: {y}",
 				indexLabel: "{label}-{y}",
 				dataPoints: <?php echo json_encode($assetData, JSON_NUMERIC_CHECK); ?>
-			}]
+			}],
+			options: {
+				responsive: true,
+				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+			}
 		});
 		chart.render();
 	}
