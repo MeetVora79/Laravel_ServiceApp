@@ -223,7 +223,7 @@ class TicketController extends Controller
         $ticket->save();
 
         return redirect()->route('tickets.index')
-            ->with('success','New Ticket is Created Successfully.');
+            ->with('success','Your Ticket is Created Successfully.');
     }
 
     /**

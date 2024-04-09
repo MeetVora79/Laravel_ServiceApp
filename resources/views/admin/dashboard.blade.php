@@ -36,12 +36,10 @@
         </div>
     </div>
     <div class="section-body">
-        <div class="row justify-content-center">
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <!-- <div class="card-header">
-                        <h4>{{ Auth::user()->name }} Dashboard</h4>                     
-                    </div> -->
+                    
                     <div class="card-body mt-2 mb-3">
                         <div class="mb-3-row p-3">
                             <div class="container">
@@ -132,7 +130,6 @@
         </div>
     </div>
 
-
 </section>
 @endsection
 
@@ -149,7 +146,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+                maintainAspectRatio: false 
             },
             dataType: 'json',
             success: function(response) {
@@ -185,12 +182,10 @@
         });
     }
     $(function() {
-        // On page load, fetch data for the default date range.
         var initialStartDate = $('#startDate').val();
         var initialEndDate = $('#endDate').val();
         updateChartData(initialStartDate, initialEndDate);
 
-        // Listener for date changes.
         $('#startDate, #endDate').change(function() {
             var startDate = $('#startDate').val();
             var endDate = $('#endDate').val();
@@ -219,7 +214,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+                maintainAspectRatio: false 
             }
         });
         chart.render();
@@ -245,7 +240,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+                maintainAspectRatio: false 
             }
         });
         chart.render();
@@ -272,7 +267,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false // Allows the chart to fit into the parent div size
+                maintainAspectRatio: false 
             }
         });
         chart.render();

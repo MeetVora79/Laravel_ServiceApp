@@ -13,6 +13,7 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\PDF;
 use Illuminate\Support\Str;
 
 class ReportController extends Controller
@@ -35,10 +36,13 @@ class ReportController extends Controller
 			$headings = array_keys($data->first()->getAttributes());
 		}
 
-		if ($exportType === 'CSV') {
-			return $this->exportToCsv($modelClass, $startDate, $endDate, Str::slug($reportType) . '.csv');
-		} elseif ($exportType === 'Excel') {
-			return Excel::download(new GenericExport($data,$headings), Str::slug($reportType) . '.xlsx');
+		if ($exportType === 'Excel') {
+			return Excel::download(new GenericExport($data, $headings), Str::slug($reportType) . '.xlsx');
+			//  } elseif ($exportType === 'CSV') {
+			// 	return $this->exportToCsv($modelClass, $startDate, $endDate, Str::slug($reportType) . '.csv');
+		} elseif ($exportType === 'PDF') {
+			$transformedData = $this->transformDataForTransposedView($data);
+			return $this->exportToPdf($transformedData, $reportType);
 		}
 
 		return response()->json(['error' => 'Invalid export type provided.'], 400);
@@ -69,41 +73,86 @@ class ReportController extends Controller
 	}
 
 
-	protected function exportToCsv($modelClass, $startDate, $endDate, $filename = 'report.csv')
+	// protected function exportToCsv($modelClass, $startDate, $endDate, $filename = 'report.csv')
+	// {
+	// 	$headers = [
+	// 		"Content-type" => "text/csv",
+	// 		"Content-Disposition" => "attachment; filename={$filename}",
+	// 		"Pragma" => "no-cache",
+	// 		"Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+	// 		"Expires" => "0"
+	// 	];
+
+	// 	$callback = function () use ($modelClass, $startDate, $endDate) {
+	// 		$file = fopen('php://output', 'w');
+
+	// 		$dateColumn = 'created_at';
+	// 		if ($modelClass === 'App\Models\Ticket') {
+	// 			$dateColumn = 'TicketCreatedAt';
+	// 		} elseif ($modelClass === 'App\Models\Asset') {
+	// 			$dateColumn = 'AssetCreatedAt';
+	// 		}
+
+	// 		$query = $modelClass::whereBetween($dateColumn, [$startDate, $endDate]);
+	// 		$data = $query->get();
+
+	// 		if ($data->count() > 0) {
+	// 			fputcsv($file, array_keys($data->first()->getAttributes()));
+	// 		}
+
+	// 		foreach ($data as $row) {
+	// 			fputcsv($file, $row->getAttributes());
+	// 		}
+
+	// 		fclose($file);
+	// 	};
+
+	// 	return response()->stream($callback, 200, $headers);
+	// }
+
+	public function transformDataForTransposedView($data)
 	{
-		$headers = [
-			"Content-type" => "text/csv",
-			"Content-Disposition" => "attachment; filename={$filename}",
-			"Pragma" => "no-cache",
-			"Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-			"Expires" => "0"
-		];
+		$transformed = [];
 
-		$callback = function () use ($modelClass, $startDate, $endDate) {
-			$file = fopen('php://output', 'w');
+		if ($data->isEmpty()) {
+			return $transformed;
+		}
 
-			$dateColumn = 'created_at';
-			if ($modelClass === 'App\Models\Ticket') {
-				$dateColumn = 'TicketCreatedAt';
-			} elseif ($modelClass === 'App\Models\Asset') {
-				$dateColumn = 'AssetCreatedAt';
+		$attributes = array_keys($data->first()->getAttributes());
+
+		foreach ($attributes as $attribute) {
+			$row = [$attribute];
+			foreach ($data as $item) {
+				$row[] = $item->$attribute;
 			}
+			$transformed[] = $row;
+		}
 
-			$query = $modelClass::whereBetween($dateColumn, [$startDate, $endDate]);
-			$data = $query->get();
+		return $transformed;
+	}
 
-			if ($data->count() > 0) {
-				fputcsv($file, array_keys($data->first()->getAttributes()));
-			}
 
-			foreach ($data as $row) {
-				fputcsv($file, $row->getAttributes());
-			}
+	public function exportToPdf($transformed, $reportType)
+	{
+		// $data = $this->fetchData($modelClass, $startDate, $endDate);
+		// $headings = [];
 
-			fclose($file);
-		};
+		// if ($data->isNotEmpty()) {
+		// 	$headings = array_keys($data->first()->getAttributes());
+		// }
 
-		return response()->stream($callback, 200, $headers);
+		// $pdf = PDF::loadView('reports.pdf', [
+		// 	'data' => $data,
+		// 	'headings' => $headings,
+		// 	'reportTitle' => Str::title($reportType) . ' Report'
+		// ])->setPaper('a4', 'landscape');
+
+		$pdf = PDF::loadView('reports.pdf', [
+			'transformedData' => $transformed,
+			'reportTitle' => Str::title($reportType) . ' Report'
+		]);
+
+		return $pdf->download(Str::slug($reportType) . '.pdf');
 	}
 
 

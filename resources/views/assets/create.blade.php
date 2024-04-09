@@ -33,7 +33,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetCusId" class="col-md-4 col-form-label text-md-end text-start"><strong>Customer Name</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetmanagers') is-invalid @enderror select2 col-md-11" aria-label="Used By" id="assetmanagers" name="AssetCusId" required>
+                                            <select class="form-control @error('AssetCusId') is-invalid @enderror select2 col-md-11" aria-label="Used By" id="AssetCusId" name="AssetCusId" required>
                                                 <option>Select</option>
                                                 @forelse ($customers as $customer)
                                                 <option value="{{  $customer->CustomerId }}">
@@ -42,8 +42,8 @@
                                                 @empty
                                                 @endforelse
                                             </select>
-                                            @if ($errors->has('assetmanagers'))
-                                            <span class="text-danger">{{ $errors->first('assetmanagers') }}</span>
+                                            @if ($errors->has('AssetCusId'))
+                                            <span class="text-danger">{{ $errors->first('AssetCusId') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -72,7 +72,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetTypeId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Type</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assettypes') is-invalid @enderror select2 col-md-11" aria-label="Asset Type" id="assettypes" name="AssetTypeId" required>
+                                            <select class="form-control @error('AssetTypeId') is-invalid @enderror select2 col-md-11" aria-label="Asset Type" id="AssetTypeId" name="AssetTypeId" required>
                                                 <option>Select Asset Type</option>
                                                 @forelse ($assettypes as $type)
                                                 <option value="{{  $type->AssetTypeId }}">
@@ -81,8 +81,8 @@
                                                 @empty
                                                 @endforelse
                                             </select>
-                                            @if ($errors->has('assettypes'))
-                                            <span class="text-danger">{{ $errors->first('assettypes') }}</span>
+                                            @if ($errors->has('AssetTypeId'))
+                                            <span class="text-danger">{{ $errors->first('AssetTypeId') }}</span>
                                             @endif
                                         </div><a href="{{ route('assettype.create') }}" class="btn btn-info btn-sm my-2"><i class=""> </i>New</a>
                                     </div>
@@ -101,7 +101,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetDepartmentId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Department</strong></label>
                                         <div class="dropdown col-md-6">
-                                            <select class="form-control @error('assetdepartments') is-invalid @enderror select2 col-md-11" aria-label="Asset Department" id="assetdepartments" name="AssetDepartmentId" required>
+                                            <select class="form-control @error('AssetDepartmentId') is-invalid @enderror select2 col-md-11" aria-label="Asset Department" id="AssetDepartmentId" name="AssetDepartmentId" required>
                                                 <option>Select Department</option>
                                                 @forelse ($assetdepartments as $department)
                                                 <option value="{{  $department->DepartmentId }}">
@@ -110,8 +110,8 @@
                                                 @empty
                                                 @endforelse
                                             </select>
-                                            @if ($errors->has('assetdepartments'))
-                                            <span class="text-danger">{{ $errors->first('assetdepartments') }}</span>
+                                            @if ($errors->has('AssetDepartmentId'))
+                                            <span class="text-danger">{{ $errors->first('AssetDepartmentId') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetOrganizationId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Organization</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetorganizations') is-invalid @enderror select2 col-md-11" aria-label="Asset Organization" id="assetorganizations" name="AssetOrganizationId" required>
+                                            <select class="form-control @error('AssetOrganizationId') is-invalid @enderror select2 col-md-11" aria-label="Asset Organization" id="AssetOrganizationId" name="AssetOrganizationId" required>
                                                 <option>Select Organization</option>
                                                 @forelse ($assetorganizations as $organization)
                                                 <option value="{{  $organization->OrganizationId }}">
@@ -128,8 +128,8 @@
                                                 @empty
                                                 @endforelse
                                             </select>
-                                            @if ($errors->has('assetorganizations'))
-                                            <span class="text-danger">{{ $errors->first('assetorganizations') }}</span>
+                                            @if ($errors->has('AssetOrganizationId'))
+                                            <span class="text-danger">{{ $errors->first('AssetOrganizationId') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -150,7 +150,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetManagedBy" class="col-md-4 col-form-label text-md-end text-start"><strong>Managed By</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetmanagers') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="assetmanagers" name="AssetManagedBy" required>
+                                            <select class="form-control @error('AssetManagedBy') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="assetmanagers" name="AssetManagedBy" required>
                                                 <option>Select</option>
                                                 @forelse ($staffs as $staff)
                                                 <option value="{{  $staff->StaffId }}">
@@ -159,8 +159,8 @@
                                                 @empty
                                                 @endforelse
                                             </select>
-                                            @if ($errors->has('assetmanagers'))
-                                            <span class="text-danger">{{ $errors->first('assetmanagers') }}</span>
+                                            @if ($errors->has('AssetManagedBy'))
+                                            <span class="text-danger">{{ $errors->first('AssetManagedBy') }}</span>
                                             @endif
                                         </div>
                                     </div>

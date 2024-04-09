@@ -2,7 +2,7 @@
 @section('title', 'Reports & Statistics')
 @push('styles')
 <style>
-	.row {
+	.row-style {
 		display: flex;
 		justify-content: around;
 		flex-wrap: wrap;
@@ -66,10 +66,16 @@
 									<div class="mb-3">
 										<label class="form-label"><strong>Export As</strong></label>
 										<div class="d-flex align-items-center">
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="exportType" id="csv" value="CSV" checked>
+											<!-- <div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="exportType" id="csv" value="CSV">
 												<label class="form-check-label" for="csv">
 													CSV
+												</label>
+											</div> -->
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="exportType" id="pdf" value="PDF" checked>
+												<label class="form-check-label" for="pdf">
+													PDF
 												</label>
 											</div>
 											<div class="form-check form-check-inline ml-3">
@@ -155,7 +161,7 @@
                         </div> -->
 
 						<div class="container">
-							<div class="row">
+							<div class="row row-style">
 								<div class="product-index" style="margin-top:30px; border-style:solid">
 									<div id="chartContainer1" style="height: 350px; width: 450px;">
 									</div>
@@ -199,7 +205,7 @@
 <script>
 	function updateChartData(startDate, endDate) {
 		$.ajax({
-			url: '{{ route("admin.dashboard") }}',
+			url: '{{ route("reports.index") }}',
 			type: 'GET',
 			data: {
 				startDate: startDate,
@@ -243,12 +249,10 @@
 		});
 	}
 	$(function() {
-		// On page load, fetch data for the default date range.
 		var initialStartDate = $('#startDate').val();
 		var initialEndDate = $('#endDate').val();
 		updateChartData(initialStartDate, initialEndDate);
 
-		// Listener for date changes.
 		$('#startDate, #endDate').change(function() {
 			var startDate = $('#startDate').val();
 			var endDate = $('#endDate').val();
@@ -277,7 +281,7 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+				maintainAspectRatio: false 
 			}
 		});
 		chart.render();
@@ -303,7 +307,7 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+				maintainAspectRatio: false 
 			}
 		});
 		chart.render();
@@ -330,7 +334,7 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false // Allows the chart to fit into the parent div size
+				maintainAspectRatio: false 
 			}
 		});
 		chart.render();
