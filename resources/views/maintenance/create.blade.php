@@ -40,8 +40,8 @@
 							<div class="form-group">
 								<label for="AssignedId">Maintenance Engineer</label>
 								<div class="col-my-12">
-									<select class="form-control @error('AssignedId') is-invalid @enderror select2" aria-label="Assignd To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To" required>
-										<option>Select</option>
+									<select class="form-control @error('AssignedId') is-invalid @enderror " aria-label="Assignd To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To" required>
+										<option></option>
 										@forelse ($staffs as $staff)
 										<option value="{{  $staff->StaffId }}">
 											{{ $staff->StaffName }}

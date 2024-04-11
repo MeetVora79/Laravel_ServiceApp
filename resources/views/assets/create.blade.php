@@ -33,8 +33,8 @@
                                     <div class="mb-3 row">
                                         <label for="AssetCusId" class="col-md-4 col-form-label text-md-end text-start"><strong>Customer Name</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('AssetCusId') is-invalid @enderror select2 col-md-11" aria-label="Used By" id="AssetCusId" name="AssetCusId" required>
-                                                <option>Select</option>
+                                            <select class="form-control @error('AssetCusId') is-invalid @enderror select2 col-md-11" aria-label="Customer Name" id="AssetCusId" name="AssetCusId" required>
+                                                <option>Select Name</option>
                                                 @forelse ($customers as $customer)
                                                 <option value="{{  $customer->CustomerId }}">
                                                     {{ $customer->firstname }} {{ $customer->lastname }}
@@ -73,7 +73,7 @@
                                         <label for="AssetTypeId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Type</strong></label>
                                         <div class="col-md-6">
                                             <select class="form-control @error('AssetTypeId') is-invalid @enderror select2 col-md-11" aria-label="Asset Type" id="AssetTypeId" name="AssetTypeId" required>
-                                                <option>Select Asset Type</option>
+                                                <option>Select Type</option>
                                                 @forelse ($assettypes as $type)
                                                 <option value="{{  $type->AssetTypeId }}">
                                                     {{ $type->AssetTypeName }}
@@ -150,8 +150,8 @@
                                     <div class="mb-3 row">
                                         <label for="AssetManagedBy" class="col-md-4 col-form-label text-md-end text-start"><strong>Managed By</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('AssetManagedBy') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="assetmanagers" name="AssetManagedBy" required>
-                                                <option>Select</option>
+                                            <select class="form-control @error('AssetManagedBy') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="AssetManagedBy" name="AssetManagedBy" required>
+                                                <option>Select Name</option>
                                                 @forelse ($staffs as $staff)
                                                 <option value="{{  $staff->StaffId }}">
                                                     {{ $staff->StaffName }}
@@ -180,7 +180,7 @@
                                         <label for="AssetServiceTypeId" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Type</strong></label>
                                         <div class="col-md-6">
                                             <select class="form-control @error('AssetServiceTypeId') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="AssetServiceTypeId" name="AssetServiceTypeId" required>
-                                                <option>Select</option>
+                                                <option>Select Type</option>
                                                 @forelse ($services as $service)
                                                 <option value="{{  $service->id }}">
                                                     {{ $service->ServiceDesc }}
@@ -233,5 +233,194 @@
         $('.select2').select2();
     });
 </script>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Load saved data from LocalStorage
+        if (localStorage.getItem('AssetName')) {
+            document.getElementById('AssetName').value = localStorage.getItem('AssetName');
+        }
+        document.getElementById('AssetName').addEventListener('input', function() {
+            localStorage.setItem('AssetName', this.value);
+        });
+
+        if (localStorage.getItem('AssetSerialNum')) {
+            document.getElementById('AssetSerialNum').value = localStorage.getItem('AssetSerialNum');
+        }
+        document.getElementById('AssetSerialNum').addEventListener('input', function() {
+            localStorage.setItem('AssetSerialNum', this.value);
+        });
+
+        if (localStorage.getItem('AssetDescription')) {
+            document.getElementById('AssetDescription').value = localStorage.getItem('AssetDescription');
+        }
+        document.getElementById('AssetDescription').addEventListener('input', function() {
+            localStorage.setItem('AssetDescription', this.value);
+        });
+
+        if (localStorage.getItem('AssetLocation')) {
+            document.getElementById('AssetLocation').value = localStorage.getItem('AssetLocation');
+        }
+        document.getElementById('AssetLocation').addEventListener('input', function() {
+            localStorage.setItem('AssetLocation', this.value);
+        });
+
+
+        // Assuming you're using jQuery for the select2 plugin
+        $('#AssetCusId').on('change', function() {
+            localStorage.setItem('AssetCusId', this.value);
+        });
+        if (localStorage.getItem('AssetCusId')) {
+            $('#AssetCusId').val(localStorage.getItem('AssetCusId')).trigger('change');
+        }
+
+        $('#AssetTypeId').on('change', function() {
+            localStorage.setItem('AssetTypeId', this.value);
+        });
+        if (localStorage.getItem('AssetTypeId')) {
+            $('#AssetTypeId').val(localStorage.getItem('AssetTypeId')).trigger('change');
+        }
+
+        $('#AssetDepartmentId').on('change', function() {
+            localStorage.setItem('AssetDepartmentId', this.value);
+        });
+        if (localStorage.getItem('AssetDepartmentId')) {
+            $('#AssetDepartmentId').val(localStorage.getItem('AssetDepartmentId')).trigger('change');
+        }
+
+        $('#AssetOrganizationId').on('change', function() {
+            localStorage.setItem('AssetOrganizationId', this.value);
+        });
+        if (localStorage.getItem('AssetOrganizationId')) {
+            $('#AssetOrganizationId').val(localStorage.getItem('AssetOrganizationId')).trigger('change');
+        }
+
+        $('#AssetManagedBy').on('change', function() {
+            localStorage.setItem('AssetManagedBy', this.value);
+        });
+        if (localStorage.getItem('AssetManagedBy')) {
+            $('#AssetManagedBy').val(localStorage.getItem('AssetManagedBy')).trigger('change');
+        }
+
+        $('#AssetServiceTypeId').on('change', function() {
+            localStorage.setItem('AssetServiceTypeId', this.value);
+        });
+        if (localStorage.getItem('AssetServiceTypeId')) {
+            $('#AssetServiceTypeId').val(localStorage.getItem('AssetServiceTypeId')).trigger('change');
+        }
+
+        // Assuming the date input field has an ID of 'AssetDate'
+        const assetDateInput = document.getElementById('AssetPurchaseDate');
+        const savedDate = localStorage.getItem('AssetPurchaseDate');
+        if (savedDate) {
+            assetDateInput.value = savedDate;
+        }
+        assetDateInput.addEventListener('change', function() {
+            localStorage.setItem('AssetPurchaseDate', this.value);
+        });
+
+        const ExpiryDate = document.getElementById('AssetWarrantyExpiryDate');
+        const saveDate = localStorage.getItem('AssetWarrantyExpiryDate');
+        if (saveDate) {
+            ExpiryDate.value = saveDate;
+        }
+        ExpiryDate.addEventListener('change', function() {
+            localStorage.setItem('AssetWarrantyExpiryDate', this.value);
+        });
+
+    });
+</script> -->
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Load saved data from LocalStorage
+        loadFormData();
+
+        // Listen to form submit event
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Prevent the default form submission to handle the data first
+            // event.preventDefault();
+            
+            // You can add your validation or AJAX submission logic here
+            
+            // Assuming the AJAX call or validation is successful, clear localStorage
+            localStorage.clear();
+
+            // You might want to submit the form programmatically if you are not doing AJAX and prevented the default action
+            // this.submit(); // Uncomment if needed, ensure you're not causing an infinite loop
+        });
+    });
+
+    function loadFormData() {
+        const fields = ['AssetName', 'AssetSerialNum', 'AssetDescription', 'AssetLocation', 'AssetCusId', 'AssetTypeId', 'AssetDepartmentId', 'AssetOrganizationId', 'AssetManagedBy', 'AssetServiceTypeId', 'AssetPurchaseDate', 'AssetWarrantyExpiryDate'];
+
+        fields.forEach(field => {
+            const value = localStorage.getItem(field);
+            if (value) {
+                if (field.includes('Date') || !field.includes('Id')) {
+                    document.getElementById(field).value = value;
+                } else {
+                    $(`#${field}`).val(value).trigger('change');
+                }
+            }
+        });
+    }
+
+    localStorage.removeItem('AssetName');
+    localStorage.removeItem('AssetSerialNum');
+    localStorage.removeItem('AssetDescription');
+    localStorage.removeItem('AssetLocation');
+    localStorage.removeItem('AssetCusId');
+    localStorage.removeItem('AssetTypeId');
+    localStorage.removeItem('AssetDepartmentId');
+    localStorage.removeItem('AssetOrganizationId');
+    localStorage.removeItem('AssetManagedBy');
+    localStorage.removeItem('AssetServiceTypeId');
+    localStorage.removeItem('AssetPurchaseDate');
+    localStorage.removeItem('AssetWarrantyExpiryDate');
+
+</script> -->
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                sessionStorage.clear(); // Clears all sessionStorage
+            });
+        } else {
+            console.log("Form not found");
+        }
+        // Restoration of form data
+        document.querySelectorAll('form input, form select').forEach(element => {
+            const savedValue = sessionStorage.getItem(element.name);
+            if (savedValue) {
+                element.value = savedValue;
+            }
+            // Save data on change
+            element.addEventListener('input', function() {
+                sessionStorage.setItem(this.name, this.value);
+            });
+        });
+
+        if ($('.select2').length) {
+            $('.select2').each(function() {
+                // Initialize Select2
+                $(this).select2();
+
+                // Restore value from sessionStorage
+                const savedValue = sessionStorage.getItem(this.name);
+                if (savedValue !== null) {
+                    $(this).val(savedValue).trigger('change');
+                }
+
+                // Save data on change
+                $(this).on('change', function() {
+                    sessionStorage.setItem(this.name, $(this).val());
+                });
+            });
+        }
+    });
+</script> -->
+
 
 @endpush

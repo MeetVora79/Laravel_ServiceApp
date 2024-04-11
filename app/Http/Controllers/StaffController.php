@@ -57,8 +57,9 @@ class StaffController extends Controller
     {
         $input = $request->validate([
             'StaffName' => 'required|string|max:250',
-            'email' => 'required|string|email|max:250|unique:email',
-            'password' => 'string|min:8|confirmed',
+            'mobile' => ['required', 'string', 'max:10','min:10'],
+            'email' => 'required|string|email|max:250|unique:staffs,email',
+            'address' => ['required', 'string', 'max:255'],
             'role' => 'required',
         ]);
 
@@ -100,8 +101,9 @@ class StaffController extends Controller
         $staff = Staff::where('StaffId', $StaffId)->first();
         $input = $request->validate([
             'StaffName' => 'required|string|max:250',
+            'mobile' => ['required', 'string', 'max:10','min:10'],
             'email' => 'required|string|email|max:250',
-            'password' => 'string|min:8|confirmed',
+            'address' => ['required', 'string', 'max:255'],
             'role' => 'required',
         ]);
 

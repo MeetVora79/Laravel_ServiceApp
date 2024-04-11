@@ -2,30 +2,29 @@
 @section('title', 'Dashboard')
 @push('styles')
 <style>
-	.row {
-		display: flex;
-		justify-content: around;
-		flex-wrap: wrap;
-	}
+    .row {
+        display: flex;
+        justify-content: around;
+        flex-wrap: wrap;
+    }
 
-	.product-index {
-		flex: 1;
-		min-width: 300px;
-		box-sizing: border-box;
-		padding: 20px;
-		margin: 10px;
-		overflow: auto;
-	}
+    .product-index {
+        flex: 1;
+        min-width: 300px;
+        box-sizing: border-box;
+        padding: 20px;
+        margin: 10px;
+        overflow: auto;
+    }
 
-	#chartContainer1,
-	#chartContainer2,
-	#chartContainer3,
-	#chartContainer4 {
-		max-width: 100%;
-		max-height: 100%;
-	}
+    #chartContainer1,
+    #chartContainer2,
+    #chartContainer3,
+    #chartContainer4 {
+        max-width: 100%;
+        max-height: 100%;
+    }
 </style>
-
 @endpush
 @section('content')
 <section class="section">
@@ -39,7 +38,6 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    
                     <div class="card-body mt-2 mb-3">
                         <div class="mb-3-row p-3">
                             <div class="container">
@@ -146,7 +144,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false 
+                maintainAspectRatio: false
             },
             dataType: 'json',
             success: function(response) {
@@ -214,7 +212,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false 
+                maintainAspectRatio: false
             }
         });
         chart.render();
@@ -240,7 +238,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false 
+                maintainAspectRatio: false
             }
         });
         chart.render();
@@ -267,7 +265,7 @@
             }],
             options: {
                 responsive: true,
-                maintainAspectRatio: false 
+                maintainAspectRatio: false
             }
         });
         chart.render();

@@ -91,8 +91,14 @@ Route::group(['prefix' => 'customers'], function () {
 // Routes For Tickets
 Route::group([], function () {
     Route::get('/tickets/create', [App\Http\Controllers\TicketController::class, 'create'])->name('tickets.create');
+    Route::get('/tickets/myticket/create', [App\Http\Controllers\TicketController::class, 'mycreate'])->name('tickets.mycreate');
+    Route::get('/tickets/edit/{TicketId}', [App\Http\Controllers\TicketController::class, 'myedit'])->name('tickets.myedit');
     Route::get('/tickets/{TicketId}', [App\Http\Controllers\TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/mytickets/{TicketId}', [App\Http\Controllers\TicketController::class, 'myshow'])->name('myshow');
+    Route::post('/new/myticket/store', [App\Http\Controllers\TicketController::class, 'mystore'])->name('mystore');
+    Route::put('/new/myticket/update/{TicketId}', [App\Http\Controllers\TicketController::class, 'myupdate'])->name('myupdate');
     Route::get('/mytickets', [App\Http\Controllers\TicketController::class, 'myTickets'])->name('mytickets');
+    Route::delete('/mytickets/delete/{TicketId}', [App\Http\Controllers\TicketController::class, 'deleteTickets'])->name('myticketsdestroy');
     Route::get('/tickets/assign/{TicketId}', [App\Http\Controllers\TicketController::class, 'assign'])->name('tickets.assign');
     Route::get('/tickets/editAllocation/{AllocationId}', [App\Http\Controllers\TicketController::class, 'editassign'])->name('tickets.editassign');
     Route::post('/tickets/assignee', [App\Http\Controllers\TicketController::class, 'assigneestore'])->name('tickets.assignee');
@@ -100,7 +106,7 @@ Route::group([], function () {
     Route::get('/tickets/assigned/list', [App\Http\Controllers\TicketController::class, 'allocation'])->name('tickets.allocation');
     Route::get('/tickets/myallocation/list', [App\Http\Controllers\TicketController::class, 'myAllocation'])->name('myallocation');
     Route::get('/tickets/onfield/{AllocationId}', [App\Http\Controllers\FieldinfoController::class, 'showAllocation'])->name('tickets.onfield');
-    Route::get('/Allocation/delete', [App\Http\Controllers\TicketController::class, 'delete'])->name('tickets.allocationDelete');
+    Route::delete('/Allocation/delete', [App\Http\Controllers\TicketController::class, 'delete'])->name('tickets.allocationDelete');
     Route::get('/tickets/{ticket}/status/{status}', [App\Http\Controllers\TicketController::class, 'updateStatus'])->name('update.status');
     Route::get('/{ticket}/{status}', [App\Http\Controllers\FieldinfoController::class, 'statusUpdate'])->name('changeStatus');
 });

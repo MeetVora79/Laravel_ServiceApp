@@ -37,7 +37,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="card">
-					<div class="card-header">
+					<div class="card-header">	
 						<h4>Reports</h4>
 					</div>
 					<div class="container mt-2 ml-5">

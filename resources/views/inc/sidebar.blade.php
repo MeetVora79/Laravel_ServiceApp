@@ -59,12 +59,7 @@
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-ticket-perforated"></i> <span>Tickets</span></a>
         <ul class="dropdown-menu">
-
-          <li class=""><a class="nav-link" href="{{ route('tickets.create') }}">Create Ticket</a></li>
-
           <li><a class="nav-link" href="{{ route('myallocation') }}">My Allocated Tickets</a></li>
-
-          <li class=""><a class="nav-link" href="{{ route('mytickets') }}">My Tickets</a></li>
         </ul>
       </li>
       @else
@@ -73,7 +68,7 @@
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-ticket-perforated"></i> <span>Tickets</span></a>
         <ul class="dropdown-menu">
 
-          <li class=""><a class="nav-link" href="{{ route('tickets.create') }}">Create Ticket</a></li>
+          <li class=""><a class="nav-link" href="{{ route('tickets.mycreate') }}">Create Ticket</a></li>
 
           <li class=""><a class="nav-link" href="{{ route('mytickets') }}">My Tickets</a></li>
         </ul>
@@ -92,7 +87,7 @@
 
         </ul>
       </li>
-      @elseif(auth()->user()->role == 3 || auth()->user()->role == 4)
+      @elseif(auth()->user()->role == 4)
       <li class="menu-header">Asset</li>
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="bi bi-hdd-rack"></i><span>Asset</span></a>

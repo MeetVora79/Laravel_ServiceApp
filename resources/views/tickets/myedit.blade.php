@@ -23,42 +23,28 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('tickets.update', $ticket->TicketId) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('myupdate', $ticket->TicketId) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method("PUT")
 
-                            <!-- <div class="mb-2">
-                            <input type="checkbox" id="toggleCheckbox" name="toggle" value="1">                              
-                            <label for="newcustomer" class="p-2">New Customer</label>
-                           </div> -->
-
-                           <div class="mb-3 row" id="uncheckedContent" >
+                           <div class="mb-3 row" >
                                 <label for="TicketCreaterId" class="col-md-2 col-form-label text-md-end text-start"><strong>Creater Name</strong></label>
                                 <div class="col-md-4">
-                                  <select class="form-control @error('TicketCreaterId') is-invalid @enderror select2 col-md-11" aria-label="Creater Name" id="TicketCreaterId" name="TicketCreaterId" required>
-                                   <option>Select Your Name</option>
+                                <select class="form-control @error('TicketCreaterId') is-invalid @enderror select2 col-md-11" aria-label="Assets" id="TicketCreaterId" name="TicketCreaterId"  required>
+                                   <option>Select Asset </option>
                                         @forelse ($customers as $customer)
-                                            <option value="{{ $customer->CustomerId }}" {{ (isset($ticket) && $ticket->TicketCreaterId  == $customer->CustomerId) ? 'selected' : '' }}>
-                                            {{ $customer->firstname }} {{ $customer->lastname }}
+                                            <option value="{{  $customer->CustomerId }}" {{ (isset($ticket) && $ticket->TicketCreaterId  == $customer->CustomerId) ? 'selected' : '' }}>
+                                                {{ $customer->firstname }}  {{ $customer->lastname }}
                                             </option>                                         
                                             @empty                               
                                         @endforelse
                                     </select>
-                                    @if ($errors->has('TicketCreaterId'))
+                                @if ($errors->has('TicketCreaterId'))
                                         <span class="text-danger">{{ $errors->first('TicketCreaterId') }}</span>
                                     @endif
                                 </div>
                             </div>
 
-                            <!-- <div class="mb-3 row" id="checkedContent">
-                                <label for="TicketCreaterId" class="col-md-2 col-form-label text-md-end text-start">Creater Name</label>
-                                <div class="col-md-4">
-                                  <input type="text" class="form-control @error('TicketCreaterId ') is-invalid @enderror" id="TicketCreaterId " name="TicketCreaterId" value="{{ old('TicketCreaterId ') }}">
-                                    @if ($errors->has('TicketCreaterId '))
-                                        <span class="text-danger">{{ $errors->first('TicketCreaterId ') }}</span>
-                                    @endif
-                                </div>
-                            </div> -->
 
                             <div class="mb-3 row">
                                 <label for="TicketSubject" class="col-md-2 col-form-label text-md-end text-start"><strong>Subject</strong></label>
@@ -73,7 +59,7 @@
                             <div class="mb-3 row">
                                 <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Assets</strong></label>
                                 <div class="col-md-4">
-                                  <select class="form-control @error('TicketAssetId') is-invalid @enderror select2 col-md-11" aria-label="Assets" id="TicketAssetId" name="TicketAssetId"  required>
+                                  <select class="form-control @error('TicketAssetId') is-invalid @enderror select2 col-md-11" aria-label="Assets" id="AssetId" name="TicketAssetId"  required>
                                    <option>Select Asset </option>
                                         @forelse ($assets as $asset)
                                             <option value="{{  $asset->AssetId }}" {{ (isset($ticket) && $ticket->TicketAssetId  == $asset->AssetId) ? 'selected' : '' }}>
@@ -117,7 +103,14 @@
                             </div>
 
                             <div class="mb-3 row">
-                                <label for="Attachments" class="col-md-2 col-form-label text-md-end text-start"><strong>Attachments</strong></label>
+                                        <label for="Attachments" class="col-md-2 col-form-label text-md-end text-start"><strong>Current Attachment</strong></label>
+                                        <div class="col-md-4 ">
+                                            <span class="form-control"> {{ $ticket->Attachments }} </span>
+                                        </div>
+                                    </div>
+
+                            <div class="mb-3 row">
+                                <label for="Attachments" class="col-md-2 col-form-label text-md-end text-start"><strong>New Attachment</strong></label>
                                 <div class="col-md-4">
                                   <input type="file" class="form-control @error('Attachments') is-invalid @enderror" id="Attachments" name="Attachments" value="{{ $ticket->Attachments }}">
                                     @if ($errors->has('Attachments'))

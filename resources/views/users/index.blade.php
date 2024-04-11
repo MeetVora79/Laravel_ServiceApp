@@ -54,7 +54,9 @@
                 <tr>
                   <th scope="col">S#<a href="{{ route('users.index', ['sort' => 'StaffId', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Name<a href="{{ route('users.index', ['sort' => 'name', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                  <th scope="col">Mobile No.<a href="{{ route('users.index', ['sort' => 'mobile', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Email<a href="{{ route('users.index', ['sort' => 'email', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                  <th scope="col">Address</th>
                   <th scope="col">Roles<a href="{{ route('users.index', ['sort' => 'role', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Action</th>
                 </tr>
@@ -62,7 +64,9 @@
                 <tr>
                   <td>{{ $staff->StaffId }}</td>
                   <td>{{ $staff->StaffName }}</td>
+                  <td>{{ $staff->mobile }}</td>   
                   <td>{{ $staff->email }}</td>   
+                  <td>{{ $staff->address }}</td>   
                   <td><span class="badge bg-primary">{{ $staff->roles->name }}</span></td>
                   <td>
                     <form action="{{ route('users.destroy', $staff->StaffId) }}" method="post">

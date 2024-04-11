@@ -20,6 +20,10 @@ class EnduserController extends Controller
 		$closedTickets =  Ticket::where('TicketCreaterId', $TicketCusId)->where('TicketStatusId', 2)->count();
 		$resolvedTickets =  Ticket::where('TicketCreaterId', $TicketCusId)->where('TicketStatusId', 3)->count();
 
+		$data = [];
+		$priorityData = [];
+		$MaintenanceData = [];
+		
 		$post = DB::table('tickets')
 			->where('TicketCreaterId', $TicketCusId)
 			->join('statustickets', 'tickets.TicketStatusId', '=', 'statustickets.Statusid')

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use App\Models\User;
 use App\Models\Asset;
 use App\Models\Customer;
 use App\Models\Staff;
-use App\Models\Statusticket;
 use App\Models\Priorityticket;
 use App\Models\Allocation;
 use Illuminate\View\View;
@@ -16,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+
 
 
 class TicketController extends Controller
@@ -53,16 +52,16 @@ class TicketController extends Controller
             $ticketsQuery->where('TicketStatusId', '3');
         }
 
-        if (!empty($searchTerm) ){
+        if (!empty($searchTerm)) {
             $ticketsQuery->where(function ($query) use ($searchTerm) {
                 $columns = Schema::getColumnListing('tickets');
                 foreach ($columns as $index => $column) {
                     $method = $index === 0 ? 'where' : 'orWhere';
-                $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
+                    $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
             });
         }
-        
+
         $ticketsQuery->orderBy($sort, $direction);
 
         $tickets  = $ticketsQuery->paginate(10);
@@ -70,8 +69,7 @@ class TicketController extends Controller
 
         $nextDirection = $direction == 'asc' ? 'desc' : 'asc';
 
-        return view('tickets.index', compact('tickets', 'hasTickets', 'nextDirection'), [
-        ]);
+        return view('tickets.index', compact('tickets', 'hasTickets', 'nextDirection'), []);
     }
 
     public function myTickets(Request $request): View
@@ -79,16 +77,16 @@ class TicketController extends Controller
         $sort = $request->get('sort', 'TicketId');
         $direction = $request->get('direction', 'asc');
         $userId = Auth::user()->id;
-        $TicketCusId = Customer::where('user_id',$userId)->value('CustomerId');  
+        $TicketCusId = Customer::where('user_id', $userId)->value('CustomerId');
         $searchTerm = $request->input('searchTerm');
         $ticketsQuery  = Ticket::query();
 
-        if (!empty($searchTerm) ){
+        if (!empty($searchTerm)) {
             $ticketsQuery->where(function ($query) use ($searchTerm) {
                 $columns = Schema::getColumnListing('tickets');
                 foreach ($columns as $index => $column) {
                     $method = $index === 0 ? 'where' : 'orWhere';
-                $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
+                    $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
             });
         }
@@ -100,8 +98,7 @@ class TicketController extends Controller
 
         $nextDirection = $direction == 'asc' ? 'desc' : 'asc';
 
-        return view('tickets.mytickets', compact('tickets', 'nextDirection','ticketsQuery','TicketCusId'), [
-        ]);
+        return view('tickets.mytickets', compact('tickets', 'nextDirection', 'ticketsQuery', 'TicketCusId'), []);
     }
 
     public function updateStatus($TicketId, $status): RedirectResponse
@@ -126,9 +123,20 @@ class TicketController extends Controller
     public function create(): View
     {
         return view('tickets.create', [
-            'assets' => Asset::select('AssetId','AssetName')->get(),
-            'ticketpriority' => Priorityticket::select('PriorityId','PriorityName')->get(),
-            'customers' => Customer::select('CustomerId','firstname','lastname')->get(),
+            'assets' => Asset::select('AssetId', 'AssetName')->get(),
+            'ticketpriority' => Priorityticket::select('PriorityId', 'PriorityName')->get(),
+            'customers' => Customer::select('CustomerId', 'firstname', 'lastname')->get(),
+        ]);
+    }
+
+    public function mycreate(): View
+    {
+        $userId = Auth::user()->id;
+        $TicketCusId = Customer::where('user_id', $userId)->value('CustomerId');
+        return view('tickets.mycreate', [
+            'assets' => Asset::where('AssetCusId', $TicketCusId)->get(),
+            'ticketpriority' => Priorityticket::select('PriorityId', 'PriorityName')->get(),
+            'customers' => Customer::where('CustomerId', $TicketCusId)->get(),
         ]);
     }
 
@@ -156,7 +164,7 @@ class TicketController extends Controller
 
         $allocationQuery = Allocation::query();
         $allocationQuery->orderBy($sort, $direction);
-        $allocation =  $allocationQuery->paginate(10);  
+        $allocation =  $allocationQuery->paginate(10);
 
         $nextDirection = $direction == 'asc' ? 'desc' : 'asc';
 
@@ -168,16 +176,16 @@ class TicketController extends Controller
         $sort = $request->get('sort', 'AllocationId');
         $direction = $request->get('direction', 'asc');
         $userId = Auth::user()->id;
-        $TicketStaffId = Staff::where('user_id',$userId)->value('StaffId');
+        $TicketStaffId = Staff::where('user_id', $userId)->value('StaffId');
         $searchTerm = $request->input('searchTerm');
         $allocationQuery = Allocation::query();
 
-        if (!empty($searchTerm) ){
+        if (!empty($searchTerm)) {
             $allocationQuery->where(function ($query) use ($searchTerm) {
                 $columns = Schema::getColumnListing('allocations');
                 foreach ($columns as $index => $column) {
                     $method = $index === 0 ? 'where' : 'orWhere';
-                $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
+                    $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
             });
         }
@@ -211,19 +219,43 @@ class TicketController extends Controller
      */
     public function store(Request $request, Ticket $ticket): RedirectResponse
     {
-        
+
         $ticket->TicketSubject = $request->TicketSubject;
         $ticket->TicketCreaterId = $request->TicketCreaterId;
         $ticket->TicketAssetId = $request->TicketAssetId;
         $ticket->TicketPriorityId = $request->TicketPriorityId;
         $ticket->TicketDescription = $request->TicketDescription;
-        $fileName = time() . '.' . $request->Attachments->extension();
-        $request->Attachments->move(public_path('uploads'), $fileName);
-        $ticket->Attachments = $fileName;
+        $originalFileName = $request->Attachments->getClientOriginalName();
+        $request->Attachments->move(public_path('uploads'), $originalFileName);
+        $ticket->Attachments = $originalFileName;
         $ticket->save();
 
         return redirect()->route('tickets.index')
-            ->with('success','Your Ticket is Created Successfully.');
+            ->with('success', 'Your Ticket is Created Successfully.');
+    }
+
+    public function mystore(Request $request, Ticket $ticket): RedirectResponse
+    {
+
+        $ticket->TicketSubject = $request->TicketSubject;
+        $ticket->TicketCreaterId = $request->TicketCreaterId;
+        $ticket->TicketAssetId = $request->TicketAssetId;
+        $ticket->TicketPriorityId = $request->TicketPriorityId;
+        $ticket->TicketDescription = $request->TicketDescription;
+        $originalFileName = $request->Attachments->getClientOriginalName();
+        $request->Attachments->move(public_path('uploads'), $originalFileName);
+        $ticket->Attachments = $originalFileName;
+        $ticket->save();
+
+        $notification = new \App\Models\Notification();
+        $notification->title = "New Ticket Submitted";
+        $notification->message = "A new ticket with the subject '{$ticket->TicketSubject}' has been submitted by user ID: {$ticket->TicketCreaterId}.";
+        $notification->type = 'new_ticket';
+        $notification->status = 'unread'; 
+        $notification->save();
+
+        return redirect()->route('mytickets')
+            ->with('success', 'Your Ticket is Created Successfully.');
     }
 
     /**
@@ -237,6 +269,14 @@ class TicketController extends Controller
         ]);
     }
 
+    public function myshow($TicketId): View
+    {
+        $ticket = Ticket::where('TicketId', $TicketId)->first();
+        return view('tickets.myshow', [
+            'ticket' => $ticket,
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -244,9 +284,21 @@ class TicketController extends Controller
     {
         return view('tickets.edit', [
             'ticket' => $ticket,
-            'assets' => Asset::select('AssetId','AssetName')->get(),
-            'ticketpriorities' => Priorityticket::select('PriorityId','PriorityName')->get(),
-            'customers' => Customer::select('CustomerId','firstname','lastname')->get(),
+            'assets' => Asset::select('AssetId', 'AssetName')->get(),
+            'ticketpriorities' => Priorityticket::select('PriorityId', 'PriorityName')->get(),
+            'customers' => Customer::select('CustomerId', 'firstname', 'lastname')->get(),
+
+        ]);
+    }
+    public function myedit(Ticket $ticket, $TicketId): View
+    {
+        $userId = Auth::user()->id;
+        $ticket = Ticket::where('TicketId', $TicketId)->first();
+        $TicketCusId = Customer::where('user_id', $userId)->value('CustomerId');
+        return view('tickets.myedit', compact('ticket'), [
+            'assets' => Asset::where('AssetCusId', $TicketCusId)->get(),
+            'ticketpriorities' => Priorityticket::select('PriorityId', 'PriorityName')->get(),
+            'customers' => Customer::where('CustomerId', $TicketCusId)->get(),
 
         ]);
     }
@@ -262,17 +314,44 @@ class TicketController extends Controller
         $ticket->TicketAssetId = $request->TicketAssetId;
         $ticket->TicketPriorityId = $request->TicketPriorityId;
         $ticket->TicketDescription = $request->TicketDescription;
-        $fileName = time() . '.' . $request->Attachments->extension();
-        $request->Attachments->move(public_path('uploads'), $fileName);
-        $ticket->Attachments = $fileName;
+        $originalFileName = $request->Attachments->getClientOriginalName();
+        $request->Attachments->move(public_path('uploads'), $originalFileName);
+        $ticket->Attachments = $originalFileName;
         $ticket->update();
 
         if (empty($request->from)) {
             return redirect()->route('tickets.index')
-                ->with('success','Ticket is Updated Successfully.');
+                ->with('success', 'Ticket is Updated Successfully.');
         } else {
             return redirect()->route('tickets.edit')
-                ->with('error','Something went Wrong.');
+                ->with('error', 'Something went Wrong.');
+        }
+    }
+
+    public function myupdate(Request $request, $TicketId): RedirectResponse
+    {
+        $input = $request->validate([
+            'TicketCreaterId' => ['required', 'integer', 'exists:customers,CustomerId'],
+            'TicketSubject' => ['required', 'string', 'max:255'],
+            'TicketAssetId' => ['required', 'integer', 'exists:assets,AssetId'],
+            'TicketPriorityId' => ['required', 'integer', 'exists:prioritytickets,PriorityId'],
+            'TicketDescription' => ['required', 'string', 'max:255'],
+            'Attachments' => ['file'],
+        ]);
+        if ($request->hasFile('Attachments')) {
+            $originalFileName = $request->Attachments->getClientOriginalName();
+            $request->Attachments->move(public_path('uploads'), $originalFileName);
+            $input['Attachments'] = $originalFileName;
+        }
+        $ticket = Ticket::where('TicketId', $TicketId)->first();
+        $ticket->update($input);
+
+        if (empty($request->from)) {
+            return redirect()->route('mytickets')
+                ->with('success', 'Ticket is Updated Successfully.');
+        } else {
+            return redirect()->route('tickets.myedit')
+                ->with('error', 'Something went Wrong.');
         }
     }
 
@@ -282,12 +361,19 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket): RedirectResponse
     {
         $ticket->delete();
-        return redirect()->route('tickets.index')->with('success','Ticket is Deleted Successfully.');
+        return redirect()->route('tickets.index')->with('success', 'Ticket is Deleted Successfully.');
     }
 
     public function delete(Allocation $allocation): RedirectResponse
     {
         $allocation->delete();
-        return redirect()->route('tickets.allocation')->with('success','Allocation is Deleted Successfully.');
+        return redirect()->route('tickets.allocation')->with('success', 'Allocation is Deleted Successfully.');
+    }
+
+    public function deleteTickets($TicketId): RedirectResponse
+    {
+        $ticket = Ticket::where('TicketId', $TicketId)->first();
+        $ticket->delete();
+        return redirect()->route('mytickets')->with('success', 'Ticket is Deleted Successfully.');
     }
 }

@@ -199,9 +199,16 @@
                                     </div>
 
                                     <div class="mb-3 row">
-                                        <label for="AssetImage" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Image</strong></label>
+                                        <label for="AssetImage" class="col-md-4 col-form-label text-md-end text-start"><strong>Current Asset Image</strong></label>
+                                        <div class="col-md-6 ">
+                                            <span class="form-control"> {{$asset->AssetImage}} </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="AssetImage" class="col-md-4 col-form-label text-md-end text-start"><strong>New Asset Image</strong></label>
                                         <div class="col-md-6">
-                                            <input type="file" class="form-control @error('AssetImage') is-invalid @enderror" id="AssetImage" name="AssetImage" value="{{ $asset->AssetImage  }}" required>
+                                            <input type="file" class="form-control @error('AssetImage') is-invalid @enderror" id="AssetImage" name="AssetImage" value="{{$asset->AssetImage  }}">
                                             @if ($errors->has('AssetImage'))
                                             <span class="text-danger">{{ $errors->first('AssetImage') }}</span>
                                             @endif

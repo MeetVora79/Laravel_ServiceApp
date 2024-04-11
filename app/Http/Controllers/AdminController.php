@@ -13,6 +13,7 @@ class AdminController extends Controller
 {
 	public function dashboard(Request $request)
 	{
+		// $notifications = Notification::where('status', 'unread')->get();
 
 		$totalTickets = Ticket::count('TicketId');
 		$openTickets = Ticket::where('TicketStatusId', 1)->count();
@@ -79,6 +80,6 @@ class AdminController extends Controller
 			);
 		}
 
-		return view('admin.dashboard', compact('data', 'priorityData', 'assetData','chartData','scheduled','unscheduled', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets', 'assignTickets', 'unassignTickets'), []);
+		return view('admin.dashboard', compact('data','priorityData', 'assetData','chartData','scheduled','unscheduled', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets', 'assignTickets', 'unassignTickets'), []);
 	}
 }

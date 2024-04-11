@@ -76,7 +76,7 @@
               </form>
             </div>
             <div class="card-header-form">
-              <a href="{{ route('tickets.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"> </i>Create Ticket</a>
+              <a href="{{ route('tickets.mycreate') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"> </i>Create Ticket</a>
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Filter
               </button>
@@ -115,35 +115,15 @@
                   <td><img style="width:80px; height:70px" src="{{asset('uploads/'.$ticket->Attachments)}}" alt="No Image Found!!"></td>
                   <td>{{ $ticket->TicketCreatedAt }}</td>
                   <td>
-                    <form action="{{ route('tickets.destroy', $ticket->TicketId) }}" method="post">
+                    <form action="{{ route('myticketsdestroy', $ticket->TicketId) }}" method="post">
                       @csrf
                       @method('DELETE')
 
-                      <a href="{{ route('tickets.show', $ticket->TicketId) }}" class="btn btn-warning btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Show"><i class="bi bi-eye"></i> </a>
+                      <a href="{{ route('myshow', $ticket->TicketId) }}" class="btn btn-warning btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Show"><i class="bi bi-eye"></i> </a>
 
-                      <a href="{{ route('tickets.edit', $ticket->TicketId) }}" class="btn btn-primary btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="bi bi-pencil-square"></i> </a>
-
-                      @if(auth()->user()->role == 1 || auth()->user()->role == 2)
-                      <a href="{{ route('tickets.assign', $ticket->TicketId) }}" class="btn btn-success btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Assign"><i class="bi bi-plus-circle"></i></a>
-                      @endif
+                      <a href="{{ route('tickets.myedit', $ticket->TicketId) }}" class="btn btn-primary btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="bi bi-pencil-square"></i> </a>
 
                       <button type="submit" class="btn btn-danger btn-sm m-1" onclick="return confirm('Do you want to delete this ticket?');" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete"><i class="bi bi-trash"></i> </button>
-
-                      @if(auth()->user()->role == 1 || auth()->user()->role == 2)
-                      <button type="button" class="btn btn-info btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Action" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-arrow-left-right"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a href="#" class="dropdown-item my-2">Change Status</a>
-                          <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
-                            <li><a href="{{ route('update.status',['ticket' => $ticket->TicketId , 'status' => 'open']) }}" class="dropdown-item my-2">Open</a></li>
-                            <li><a href="{{ route('update.status',['ticket' => $ticket->TicketId, 'status' => 'closed']) }}" class="dropdown-item my-2">Closed</a></li>
-                            <li><a href="{{ route('update.status',['ticket' =>  $ticket->TicketId, 'status' => 'resolved']) }}" class="dropdown-item my-2">Resolved</a></li>
-                          </ul>
-                        </li>
-                        <!-- <li><a href="{{ route('tickets.index') }}" class="dropdown-item my-2">Merge Tickets</a></li>
-                        <li><a href="{{ route('tickets.index') }}" class="dropdown-item my-2">Forward Tickets</a></li> -->
-                      </ul>
-                      @endif
 
                     </form>
                   </td>

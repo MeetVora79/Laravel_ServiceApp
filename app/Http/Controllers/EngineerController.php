@@ -19,6 +19,9 @@ class EngineerController extends Controller
 		$closedTickets =  Ticket::where('TicketCreaterId', $TicketStaffId)->where('TicketStatusId', 2)->count();
 		$resolvedTickets =  Ticket::where('TicketCreaterId', $TicketStaffId)->where('TicketStatusId', 3)->count();
 
+		$data = [];
+		$priorityData = [];
+		$assetData = [];
 		$post = DB::table('tickets')
 			->join('statustickets', 'tickets.TicketStatusId', '=', 'statustickets.Statusid')
 			->select('statustickets.StatusName as label', DB::raw('count(tickets.TicketId) as y'))

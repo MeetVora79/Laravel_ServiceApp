@@ -72,7 +72,6 @@ class DepartmentController extends Controller
     {
         $department = Department::where('DepartmentId', $DepartmentId)->first();
         $input = $request->all();
-
         $department->update($input);
 
         if (empty($request->from)) {

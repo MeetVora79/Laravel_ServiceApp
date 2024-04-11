@@ -37,11 +37,31 @@
                             </div>
 
                             <div class="mb-3 row">
+                                <label for="mobile" class="col-md-2 col-form-label text-md-end text-start"><strong>Mobile No.</strong></label>
+                                <div class="col-md-4">
+                                  <input type="text" class="form-control @error('mobile') is-invalid @enderror" id="mobile" name="mobile" value="{{ old('mobile') }}" required>
+                                    @if ($errors->has('mobile'))
+                                        <span class="text-danger">{{ $errors->first('mobile') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
                                 <label for="email" class="col-md-2 col-form-label text-md-end text-start"><strong>Email</strong></label>
                                 <div class="col-md-4">
                                   <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
                                     @if ($errors->has('email'))
                                         <span class="text-danger">{{ $errors->first('email') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="address" class="col-md-2 col-form-label text-md-end text-start"><strong>Address</strong></label>
+                                <div class="col-md-4">
+                                  <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" value="{{ old('address') }}" required>
+                                    @if ($errors->has('address'))
+                                        <span class="text-danger">{{ $errors->first('address') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -61,23 +81,6 @@
                                     @if ($errors->has('role'))
                                         <span class="text-danger">{{ $errors->first('role') }}</span>
                                     @endif
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label for="password" class="col-md-2 col-form-label text-md-end text-start"><strong>Password</strong></label>
-                                <div class="col-md-4">
-                                  <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
-                                    @if ($errors->has('password'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="mb-3 row">
-                                <label for="password_confirmation" class="col-md-2 col-form-label text-md-end text-start"><strong>Confirm Password</strong></label>
-                                <div class="col-md-4">
-                                  <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                                 </div>
                             </div>
 

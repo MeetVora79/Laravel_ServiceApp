@@ -126,9 +126,10 @@ class AssetController extends Controller
         ]);
 
         if ($request->hasFile('AssetImage')) {
-            $fileName = time() . '.' . $request->AssetImage->extension();
-            $request->AssetImage->move(public_path('uploads'), $fileName);
-            $validatedData['AssetImage'] = $fileName;
+            $originalFileName = $request->AssetImage->getClientOriginalName();
+            // $fileName = time() . '.' . $request->AssetImage->extension();
+            $request->AssetImage->move(public_path('uploads'), $originalFileName);
+            $validatedData['AssetImage'] = $originalFileName;
         }
 
         Asset::create($validatedData);
@@ -184,25 +185,13 @@ class AssetController extends Controller
         ]);
 
         if ($request->hasFile('AssetImage')) {
-            $fileName = time() . '.' . $request->AssetImage->extension();
-            $request->AssetImage->move(public_path('uploads'), $fileName);
-            $validatedData['AssetImage'] = $fileName;
+            $originalFileName = $request->AssetImage->getClientOriginalName();
+            // $fileName = time() . '.' . $request->AssetImage->extension();
+            $request->AssetImage->move(public_path('uploads'), $originalFileName);
+            $validatedData['AssetImage'] = $originalFileName;
         }
 
         $asset = Asset::where('AssetId', $AssetId)->first();
-        $asset->AssetCusId = $request->AssetCusId;
-        $asset->AssetName = $request->AssetName;
-        $asset->AssetSerialNum = $request->AssetSerialNum;
-        $asset->AssetTypeId = $request->AssetTypeId;
-        $asset->AssetDescription = $request->AssetDescription;
-        $asset->AssetDepartmentId = $request->AssetDepartmentId;
-        $asset->AssetOrganizationId = $request->AssetOrganizationId;
-        $asset->AssetLocation = $request->AssetLocation;
-        $asset->AssetManagedBy = $request->AssetManagedBy;
-        $asset->AssetPurchaseDate = $request->AssetPurchaseDate;
-        $asset->AssetServiceTypeId = $request->AssetServiceTypeId;
-        $asset->AssetWarrantyExpiryDate = $request->AssetWarrantyExpiryDate;
-        $asset->AssetImage = $request->AssetImage;
         $asset->update($validatedData);
 
 
@@ -211,7 +200,7 @@ class AssetController extends Controller
                 ->with('success','Asset is Updated Successfully.');
         } else {
             return redirect()->route('assets.edit')
-                ->with('error','Something went WWrong.');
+                ->with('error','Something Went Wrong.');
         }
     }
 

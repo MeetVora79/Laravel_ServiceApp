@@ -28,11 +28,11 @@
                             @method("PUT")
 
                             <div class="mb-3 row">
-                                <label for="name" class="col-md-2 col-form-label text-md-end text-start"><strong>Department Name:</strong></label>
+                                <label for="DepartmentName" class="col-md-2 col-form-label text-md-end text-start"><strong>Department Name:</strong></label>
                                 <div class="col-md-4">
-                                  <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $department->DepartmentName }}" required>
-                                    @if ($errors->has('name'))
-                                        <span class="text-danger">{{ $errors->first('name') }}</span>
+                                  <input type="text" class="form-control @error('DepartmentName') is-invalid @enderror" id="DepartmentName" name="DepartmentName" value="{{ $department->DepartmentName }}" required>
+                                    @if ($errors->has('DepartmentName'))
+                                        <span class="text-danger">{{ $errors->first('DepartmentName') }}</span>
                                     @endif
                                 </div>
                             </div>
