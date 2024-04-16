@@ -63,6 +63,7 @@
                   <th scope="col">Asset Location<a href="{{ route('assets.index', ['sort' => 'AssetLocation', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Managed BY</th>
                   <th scope="col">Service Type</th>
+                  <th scope="col">Total Services</th>
                   <th scope="col">Warranty Expiry Date<a href="{{ route('assets.index', ['sort' => 'AssetWarrantyExpiryDate', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Asset Image</th>
                   <th scope="col">Action</th>
@@ -80,6 +81,7 @@
                   <td>{{ $asset->AssetLocation }}</td>
                   <td>{{ $asset->staff->StaffName  }}</td>
                   <td>{{ $asset->servicetype->ServiceDesc }}</td>
+                  <td>{{ $asset->NumberOfServices }}</td>
                   <td>{{ $asset->AssetWarrantyExpiryDate }}</td>
                   <td><img style="width:80px; height:80px" src="{{asset('uploads/'.$asset->AssetImage)}}" alt="No Image Found!!"></td>
                   <td>

@@ -74,7 +74,9 @@
 
   @if (session('error'))
   <script>
-    swal("{{ session('error') }}");
+    document.addEventListener('DOMContentLoaded', function() {
+      swal("Error", "{{ session('error') }}", "error");
+    });
   </script>
   @endif
 

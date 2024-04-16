@@ -13,7 +13,6 @@ class AdminController extends Controller
 {
 	public function dashboard(Request $request)
 	{
-		// $notifications = Notification::where('status', 'unread')->get();
 
 		$totalTickets = Ticket::count('TicketId');
 		$openTickets = Ticket::where('TicketStatusId', 1)->count();
@@ -22,7 +21,9 @@ class AdminController extends Controller
 		$assignTickets =  Allocation::count('AllocationId');
 		$unassignTickets =  $totalTickets - $assignTickets;
 		$totalAsset = Asset::count('AssetId');
-		$scheduled = Schedule::count('ScheduleId');
+		$scheduled = Schedule::select(DB::raw('count(DISTINCT AssetId) as unique_assets_count'))
+			->first()
+			->unique_assets_count;
 		$unscheduled = $totalAsset - $scheduled;
 
 		$post = DB::table('tickets')
@@ -41,7 +42,7 @@ class AdminController extends Controller
 
 		$asset = DB::table('schedules')
 			->join('maintenancestates', 'schedules.MaintenanceStatusId', '=', 'maintenancestates.StatusId')
-			->select('maintenancestates.StatusName as label', DB::raw('count(schedules.ScheduleId) as y'))
+			->select('maintenancestates.StatusName as label', DB::raw('count(DISTINCT schedules.AssetId) as y'))
 			->groupBy('maintenancestates.StatusName')
 			->get()->toArray();
 
@@ -60,7 +61,7 @@ class AdminController extends Controller
 		if ($request->ajax()) {
 			return response()->json($chartData);
 		}
-		
+
 		foreach ($post as $row) {
 			$data[] = array(
 				'label' => $row->label,
@@ -73,13 +74,19 @@ class AdminController extends Controller
 				'y' => $row->y,
 			);
 		}
+
+		$assetData = [];
 		foreach ($asset as $row) {
 			$assetData[] = array(
 				'label' => $row->label,
 				'y' => $row->y,
 			);
 		}
+		$assetData[] = [
+			'label' => 'Unscheduled',
+			'y' => $unscheduled
+		];
 
-		return view('admin.dashboard', compact('data','priorityData', 'assetData','chartData','scheduled','unscheduled', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets', 'assignTickets', 'unassignTickets'), []);
+		return view('admin.dashboard', compact('data', 'priorityData', 'assetData', 'chartData', 'scheduled', 'unscheduled', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets', 'assignTickets', 'unassignTickets'), []);
 	}
 }

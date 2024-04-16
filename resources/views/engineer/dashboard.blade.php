@@ -130,7 +130,7 @@
                 var chart = new CanvasJS.Chart("chartContainer4", {
                     animationEnabled: true,
                     title: {
-                        text: "Tickets Created Over Date"
+                        text: "Tickets by Service Date"
                     },
                     axisX: {
                         title: "Date",

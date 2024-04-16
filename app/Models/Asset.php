@@ -31,8 +31,9 @@ class Asset extends Model
         'AssetLocation',
         'AssetManagedBy',
         'AssetPurchaseDate',
-        'AssetServiceTypeId',
         'AssetWarrantyExpiryDate',
+        'AssetServiceTypeId',
+        'NumberOfServices',
         'AssetImage',
 
     ];
@@ -79,7 +80,7 @@ class Asset extends Model
         if (!$schedule) {
             return 'Unscheduled';
         }
-    
+
         switch ($schedule->MaintenanceStatusId) {
             case 1:
                 return 'Completed';
@@ -89,5 +90,4 @@ class Asset extends Model
                 return 'Unscheduled';
         }
     }
-   
 }

@@ -31,38 +31,25 @@
 								<label for="AssetId">Asset ID</label>
 								<div class="col-my-12">
 
-									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$schedule->AssetId}}"  required>
+									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$schedule->AssetId}}" required readonly>
 
 									@if ($errors->has('AssetId'))
 									<span class="text-danger">{{ $errors->first('AssetId') }}</span>
 									@endif
 								</div>
 							</div>
+
 							<div class="form-group">
-								<label for="AssignedId">Maintenance Engineer</label>
-								<div class="col-my-12">
-									<select class="form-control @error('AssignedId') is-invalid @enderror select2" aria-label="Assign To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To" required>
-										<option>Select</option>
-										@forelse ($staffs as $staff)
-										<option value="{{  $staff->StaffId }}" {{ (isset($schedule) && $schedule->AssignedId == $staff->StaffId) ? 'selected' : '' }}>
-											{{ $staff->StaffName }}
-										</option>
-										@empty
-										@endforelse
-									</select>
-									@if ($errors->has('AssignedId'))
-									<span class="text-danger">{{ $errors->first('AssignedId') }}</span>
-									@endif
+								<label for="NumberOfServices"><strong>Number of Services</strong></label>
+								<input type="text" class="form-control" name="NumberOfServices" id="NumberOfServices" aria-describedby="NumberOfServices" value="{{$schedule->asset->NumberOfServices}}" required readonly>
+							</div>
+							<div id="datePickersContainer">
+								<div class="form-group">
+									<label for="ServiceDate"><strong>Service Date</strong></label>
+									<input type="date" class="form-control" name="ServiceDate" id="ServiceDate" value="{{$schedule->ServiceDate}}" required>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="ServiceDate">Service Date</label>
-								<input type="Date" class="form-control" name="ServiceDate" id="ServiceDate" aria-describedby="ticketserviceDate" value="{{$schedule->ServiceDate}}" required>
-							</div>
-							<div class="form-group">
-								<label for="TimeSlot">Time Slot</label>
-								<input type="time" class="form-control" name="TimeSlot" id="TimeSlot" aria-describedby="tickettimeSlot" value="{{$schedule->TimeSlot}}" required>
-							</div>
+
 							<div class="form-group">
 								<label for="Instruction">Instruction</label>
 								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!" value="{{$schedule->Instruction}}" required>
@@ -81,10 +68,6 @@
 @endsection
 @push('scripts')
 <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-<script>
-	$(document).ready(function() {
-		$('.select2').select2();
-	});
-</script>
+
 
 @endpush

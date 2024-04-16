@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;

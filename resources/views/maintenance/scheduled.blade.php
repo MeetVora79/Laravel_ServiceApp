@@ -90,7 +90,6 @@
 									<th scope="col">Maintenance Engineer</th>
 									<th scope="col">Maintenance Status</th>
 									<th scope="col"><a href="{{ route('maintenance.scheduled', ['sort' => 'ServiceDate', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a>Service Date</th>
-									<th scope="col"><a href="{{ route('maintenance.scheduled', ['sort' => 'TimeSlot', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a>Time Slot</th>
 									<th scope="col">Instruction</th>
 									<th scope="col">Action</th>
 								</tr>
@@ -100,10 +99,9 @@
 									<td>{{ $schedule->ScheduleId  }}</td>
 									<td>{{ $schedule->AssetId  }}</td>
 									<td>{{ $schedule->asset->customer->firstname }} {{ $schedule->asset->customer->lastname }}</td>
-									<td>{{ $schedule->staff->StaffName }}</td>
+									<td>{{ $schedule->asset->staff->StaffName }}</td>
 									<td>{{ $schedule->maintenancestatus->StatusName }}</td>
 									<td>{{ $schedule->ServiceDate }}</td>
-									<td>{{ $schedule->TimeSlot }}</td>
 									<td>{{ $schedule->Instruction }}</td>
 									<td>
 										<form action="{{ route('maintenance.destroy',  $schedule->ScheduleId) }}" method="post">
@@ -163,6 +161,7 @@
 								</td>
 								@endforelse
 							</table>
+							{{ $schedules->links() }}
 						</div>
 					</div>
 				</div>
@@ -175,11 +174,6 @@
 
 @push('scripts')
 <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-<script>
-	$(document).ready(function() {
-		$('.select2').select2();
-	});
-</script>
 <script>
 	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 	var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {

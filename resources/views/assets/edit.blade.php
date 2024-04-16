@@ -32,7 +32,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetCusId" class="col-md-4 col-form-label text-md-end text-start"><strong>Customer Name</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetmanagers') is-invalid @enderror select2 col-md-11" aria-label="Used By" id="assetmanagers" name="AssetCusId" required>
+                                            <select class="form-control @error('assetmanagers') is-invalid @enderror " aria-label="Used By" id="assetmanagers" name="AssetCusId" required>
                                                 <option>Select</option>
                                                 @forelse ($customers as $customer)
                                                 <option value="{{  $customer->CustomerId }}" {{ (isset($asset) && $asset->AssetCusId == $customer->CustomerId) ? 'selected' : '' }}>
@@ -70,7 +70,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetTypeId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Type</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assettypes') is-invalid @enderror select2 col-md-11" aria-label="Asset Type" id="assettypes" name="AssetTypeId" required>
+                                            <select class="form-control @error('assettypes') is-invalid @enderror " aria-label="Asset Type" id="assettypes" name="AssetTypeId" required>
                                                 <option value="">Select Asset Type</option>
                                                 @forelse ($assettypes as $type)
                                                 <option value="{{  $type->AssetTypeId }}" {{ (isset($asset) && $asset->AssetTypeId == $type->AssetTypeId) ? 'selected' : '' }}>
@@ -98,7 +98,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetDepartmentId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Department</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetdepartments') is-invalid @enderror select2 col-md-11" aria-label="Asset Department" id="assetdepartments" name="AssetDepartmentId" required>
+                                            <select class="form-control @error('assetdepartments') is-invalid @enderror" aria-label="Asset Department" id="assetdepartments" name="AssetDepartmentId" required>
                                                 <option value="">Select Department</option>
                                                 @forelse ($assetdepartments as $dept)
                                                 <option value="{{  $dept->DepartmentId }}" {{ (isset($asset) && $asset->AssetDepartmentId == $dept->DepartmentId) ? 'selected' : '' }}>
@@ -116,7 +116,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetOrganizationId" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Organization</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetorganizations') is-invalid @enderror select2 col-md-11" aria-label="Asset Organization" id="assetorganizations" name="AssetOrganizationId" required>
+                                            <select class="form-control @error('assetorganizations') is-invalid @enderror " aria-label="Asset Organization" id="assetorganizations" name="AssetOrganizationId" required>
                                                 <option value="">Select Organization</option>
                                                 @forelse ($assetorganizations as $org)
                                                 <option value="{{  $org->OrganizationId }}" {{ (isset($asset) && $asset->AssetOrganizationId == $org->OrganizationId) ? 'selected' : '' }}>
@@ -130,8 +130,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
+
                                     <div class="mb-3 row">
                                         <label for="AssetLocation" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Location</strong></label>
                                         <div class="col-md-6">
@@ -145,7 +144,7 @@
                                     <div class="mb-3 row">
                                         <label for="AssetManagedBy" class="col-md-4 col-form-label text-md-end text-start"><strong>Managed By</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control @error('assetmanagers') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="assetmanagers" name="AssetManagedBy" required>
+                                            <select class="form-control @error('assetmanagers') is-invalid @enderror " aria-label="Managed By" id="assetmanagers" name="AssetManagedBy" required>
                                                 <option>Select</option>
                                                 @forelse ($staffs as $staff)
                                                 <option value="{{  $staff->StaffId }}" {{ (isset($asset) && $asset->AssetManagedBy == $staff->StaffId) ? 'selected' : '' }}>
@@ -159,11 +158,13 @@
                                             @endif
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-md-6">
 
                                     <div class="mb-3 row">
                                         <label for="AssetPurchaseDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Purchase Date</strong></label>
                                         <div class="col-md-6">
-                                            <input type="text" class="form-control @error('AssetPurchaseDate') is-invalid @enderror" id="AssetPurchaseDate" name="AssetPurchaseDate" value="{{ $asset->AssetPurchaseDate }}" required>
+                                            <input type="date" class="form-control @error('AssetPurchaseDate') is-invalid @enderror" id="AssetPurchaseDate" name="AssetPurchaseDate" value="{{ $asset->AssetPurchaseDate }}" required>
                                             @if ($errors->has('AssetPurchaseDate'))
                                             <span class="text-danger">{{ $errors->first('AssetPurchaseDate') }}</span>
                                             @endif
@@ -171,9 +172,19 @@
                                     </div>
 
                                     <div class="mb-3 row">
+                                        <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warranty Expiry Date</strong></label>
+                                        <div class="col-md-6">
+                                            <input type="date" class="form-control @error('AssetWarrantyExpiryDate') is-invalid @enderror" id="AssetWarrantyExpiryDate" name="AssetWarrantyExpiryDate" value="{{ $asset->AssetWarrantyExpiryDate }}" required>
+                                            @if ($errors->has('AssetWarrantyExpiryDate'))
+                                            <span class="text-danger">{{ $errors->first('AssetWarrantyExpiryDate') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
                                         <label for="AssetServiceTypeId" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Type</strong></label>
                                         <div class="col-md-6">
-                                        <select class="form-control @error('AssetServiceTypeId') is-invalid @enderror select2 col-md-11" aria-label="Managed By" id="AssetServiceTypeId" name="AssetServiceTypeId" required>
+                                            <select class="form-control @error('AssetServiceTypeId') is-invalid @enderror " aria-label="Managed By" id="AssetServiceTypeId" name="AssetServiceTypeId" required>
                                                 <option>Select</option>
                                                 @forelse ($services as $service)
                                                 <option value="{{ $service->id }}" {{ (isset($asset) && $asset->AssetServiceTypeId == $service->id) ? 'selected' : '' }}>
@@ -189,14 +200,18 @@
                                     </div>
 
                                     <div class="mb-3 row">
-                                        <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warranty Expiry Date</strong></label>
+                                        <label for="NumberOfServices" class="col-md-4 col-form-label text-md-end text-start"><strong>Number of Services</strong></label>
                                         <div class="col-md-6">
-                                            <input type="date" class="form-control @error('AssetWarrantyExpiryDate') is-invalid @enderror" id="AssetWarrantyExpiryDate" name="AssetWarrantyExpiryDate" value="{{ $asset->AssetWarrantyExpiryDate }}" required>
-                                            @if ($errors->has('AssetWarrantyExpiryDate'))
-                                            <span class="text-danger">{{ $errors->first('AssetWarrantyExpiryDate') }}</span>
-                                            @endif
+                                            <select class="form-control" id="NumberOfServices" name="NumberOfServices" required>
+                                                <option value="">Select Number of Services</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                            </select>
                                         </div>
                                     </div>
+                                    <div class="row" id="datePickersContainer"></div>
 
                                     <div class="mb-3 row">
                                         <label for="AssetImage" class="col-md-4 col-form-label text-md-end text-start"><strong>Current Asset Image</strong></label>
@@ -232,6 +247,30 @@
 <script>
     $(document).ready(function() {
         $('.select2').select2();
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#NumberOfServices').on('change', function() {
+            const numberOfServices = $(this).val();
+            const datePickersContainer = $('#datePickersContainer');
+            datePickersContainer.empty(); // Clear the previous date pickers
+
+            for (let i = 0; i < numberOfServices; i++) {
+                const date = new Date();
+                date.setMonth(date.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
+                const formattedDate = date.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+
+                const datePickerHtml = `
+                <label for="ServiceDate${i+1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i+1}</strong></label>
+                    <div class="mb-3 col-md-6">
+                        <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
+                    </div>
+                `;
+                datePickersContainer.append(datePickerHtml);
+            }
+        });
     });
 </script>
 

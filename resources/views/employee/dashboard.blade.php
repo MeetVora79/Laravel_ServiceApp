@@ -237,7 +237,7 @@
                 title: "Ticket Count",
             },
             data: [{
-                type: "bar",
+                type: "column",
                 yValueFormatString: "#,##0.\"\"",
                 toolTipContent: "<b>{label}</b>: {y}",
                 indexLabel: "{label}-{y}",
@@ -264,7 +264,7 @@
                 includeZero: true,
             },
             data: [{
-                type: "column",
+                type: "bar",
                 yValueFormatString: "#,##0.\"\"",
                 toolTipContent: "<b>{label}</b>: {y}",
                 indexLabel: "{label}-{y}",

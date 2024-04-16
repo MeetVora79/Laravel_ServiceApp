@@ -41,7 +41,7 @@
 							<div class="form-group">
 								<label for="AssignId">Assign To</label>
 								<div class="col-my-12">
-									<select class="form-control @error('AssignId') is-invalid @enderror select2" aria-label="Assign To" id="AssignId" name="AssignId" placeholder="Assignee To" required>
+									<select class="form-control @error('AssignId') is-invalid @enderror " aria-label="Assign To" id="AssignId" name="AssignId" placeholder="Assignee To" required>
 										<option>Select</option>
 										@forelse ($staffs as $staff)
 										<option value="{{  $staff->StaffId }}"  {{ (isset($allocation) && $allocation->AssignId == $staff->StaffId) ? 'selected' : '' }}>

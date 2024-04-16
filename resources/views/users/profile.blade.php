@@ -57,7 +57,7 @@
         </div>
         <div class="col-12 col-md-12 col-lg-7">
           <div class="card">
-            <form method="post" action="{{ route('users.update', $user->id) }}">
+            <form method="post" action="{{ route('updateProfile', $user->id) }}">
                 @csrf
                 @method("PUT")
               <div class="card-header">
@@ -93,35 +93,16 @@
                         @endif
                     </div>
                 </div>
-
                 <div class="mb-3 row">
                     <label for="password_confirmation" class="col-md-4 col-form-label text-md-end text-start">Confirm Password</label>
                     <div class="col-md-6">
                       <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{$user->password}}">
                     </div>
                 </div>
-                @if(Auth::user()->role == 1)
-                <div class="mb-3 row">
-                    <label for="roles" class="col-md-4 col-form-label text-md-end text-start">Roles</label>
-                    <div class="col-md-6">
-                        <select class="form-control @error('roles') is-invalid @enderror select2" multiple aria-label="Roles" id="roles" name="roles[]">
-                            @forelse ($user->getRoleNames() as $role)
-                                <option value="{{ $role }}" selected>
-                                    {{ $role }}
-                                </option>
-                            @empty
-                            @endforelse
-                       
-                        </select>
-                        @if ($errors->has('roles'))
-                            <span class="text-danger">{{ $errors->first('roles') }}</span>
-                        @endif
-                    </div>
-                </div>
-                @endif
+                
                 <input type="hidden" name="from" value="profile">
               </div>
-              <div class="card-footer text-right">
+              <div class="card-footer text-center">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
               </div>
             </form>

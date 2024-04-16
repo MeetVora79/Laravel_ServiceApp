@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
+use App\Models\Customer;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
+
+
 
 
 class AuthController extends Controller
 {
-	public function loadRegister(){
-		if(Auth::user()){
+	public function loadRegister()
+	{
+		if (Auth::user()) {
 			$route = $this->redirectDash();
 			return redirect($route);
 		}
@@ -19,19 +24,28 @@ class AuthController extends Controller
 	}
 
 	public function register(Request $request)
-    {
-       $validateData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+	{
+		$validatedData = $request->validate([
+			'name' => ['required', 'string', 'max:255'],
+			'email' => ['required', 'string', 'email', 'max:255'],
+			'password' => ['required', 'string', 'min:8', 'confirmed'],
+		]);
 
-		User::create($validateData);
+		try {
+			$customerExists = Customer::where('email', $validatedData['email'])->exists();
+			if (!$customerExists) {
+				return back()->with('info', 'Only existing customers can register.')->withInput();
+			}
+			User::create($validatedData);
+			return redirect('/')->with('success', 'Your Registration has been successful.');
+		} catch (QueryException $e) {
+			return back()->with(['info', 'Registration failed due to a technical issue. Please try again.']);
+		}
+	}
 
-		return redirect('/')->with('success','Your Registration has been Successfull.');
-    }
-	public function loadLogin(){
-		if(Auth::user()){
+	public function loadLogin()
+	{
+		if (Auth::user()) {
 			$route = $this->redirectDash();
 			return redirect($route);
 		}
@@ -39,27 +53,27 @@ class AuthController extends Controller
 	}
 
 	public function login(Request $request)
-    {
-        $Credentials = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required'],
-        ]);
+	{
+		$Credentials = $request->validate([
+			'email' => ['required', 'string', 'email'],
+			'password' => ['required'],
+		]);
 
 		$user = User::where('email', $Credentials['email'])->first();
 
-		if($user && $Credentials['password'] == $user->password){
+		if ($user && $Credentials['password'] == $user->password) {
 			Auth::login($user);
 			$route = $this->redirectDash();
-			return redirect($route)->with('Success','Congratulation!!, You are Succesfully Login');
+			return redirect($route)->with('Success', 'Congratulation!!, You are Succesfully Login');
+		} else {
+			return back()->with('error', 'Incorrect Username or Password')->withInput();
 		}
-		else{
-			return back()->with('error','Username or Password is Incorrect');
-		}
-    }
+	}
 
-	public function redirectDash(){
+	public function redirectDash()
+	{
 
-		if(Auth::user()){
+		if (Auth::user()) {
 
 			switch (Auth::user()->role) {
 				case 1:
@@ -76,12 +90,33 @@ class AuthController extends Controller
 		}
 	}
 	public function logout(Request $request)
-    {
-        $request->session()->flush();
-        Auth::logout();
-        return redirect('/');
-    }
-	
-    use AuthenticatesUsers;
+	{
+		$request->session()->flush();
+		Auth::logout();
+		return redirect('/');
+	}
 
+	public function forgotPassword()
+	{
+		return view('forgotpwd');
+	}
+
+	public function setPassword(Request $request)
+	{
+		$request->validate([
+			'email' => 'required|email',
+			'password' => 'required|string|min:8|confirmed',
+		]);
+
+		$user = User::where('email', $request->email)->first();
+
+		if (!$user) {
+			return redirect()->back()->with('error', 'The provided email does not match with our records.')->withInput();
+		}
+		$user->password = $request->password;
+		$user->save();
+		return redirect('/')->with('success', 'Your Password has been Reset successfully.');
+	}
+
+	use AuthenticatesUsers;
 }

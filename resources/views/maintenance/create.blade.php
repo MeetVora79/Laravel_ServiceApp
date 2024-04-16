@@ -27,10 +27,10 @@
 						<form action="{{route('maintenance.store')}}" method="post">
 							@csrf
 							<div class="form-group">
-								<label for="AssetId">Asset ID</label>
+								<label for="AssetId"><strong>Asset ID</strong></label>
 								<div class="col-my-12">
 
-									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$asset->AssetId}}"  required>
+									<input type="text" class="form-control" name="AssetId" id="AssetId" aria-describedby="AssetId" value="{{$asset->AssetId}}" required readonly>
 
 									@if ($errors->has('AssetId'))
 									<span class="text-danger">{{ $errors->first('AssetId') }}</span>
@@ -38,33 +38,14 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="AssignedId">Maintenance Engineer</label>
-								<div class="col-my-12">
-									<select class="form-control @error('AssignedId') is-invalid @enderror " aria-label="Assignd To" id="AssignedId" name="AssignedId" placeholder="Assign Maintenance To" required>
-										<option></option>
-										@forelse ($staffs as $staff)
-										<option value="{{  $staff->StaffId }}">
-											{{ $staff->StaffName }}
-										</option>
-										@empty
-										@endforelse
-									</select>
-									@if ($errors->has('AssignedId'))
-									<span class="text-danger">{{ $errors->first('AssignedId') }}</span>
-									@endif
-								</div>
+								<label for="NumberOfServices"><strong>Number of Services</strong></label>
+								<input type="text" class="form-control" name="NumberOfServices" id="NumberOfServices" aria-describedby="NumberOfServices" value="{{$asset->NumberOfServices}}" required readonly>
 							</div>
+							<div id="datePickersContainer"></div>
+
 							<div class="form-group">
-								<label for="ServiceDate">Service Date</label>
-								<input type="Date" class="form-control" name="ServiceDate" id="ServiceDate" aria-describedby="ticketserviceDate" required>
-							</div>
-							<div class="form-group">
-								<label for="TimeSlot">Time Slot</label>
-								<input type="time" class="form-control" name="TimeSlot" id="TimeSlot" aria-describedby="tickettimeSlot" required>
-							</div>
-							<div class="form-group">
-								<label for="Instruction">Instruction</label>
-								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!" required>
+								<label for="Instruction"><strong>Instruction</strong></label>
+								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!" value="{{old('Instruction')}}" required>
 							</div>
 
 							<button type="submit" class="btn btn-primary">Create Schedule</button>
@@ -82,8 +63,24 @@
 <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
 <script>
 	$(document).ready(function() {
-		$('.select2').select2();
-	});
+    const numberOfServices = $('#NumberOfServices').val();
+    const datePickersContainer = $('#datePickersContainer');
+    datePickersContainer.empty(); 
+
+    for (let i = 0; i < numberOfServices; i++) {
+        const date = new Date();
+        date.setMonth(date.getMonth() + 3 * (i + 1)); 
+        const formattedDate = date.toISOString().split('T')[0]; 
+
+        const datePickerHtml = `
+            <div class="form-group">
+                <label for="ServiceDate${i+1}"><strong>Service Date ${i+1}</strong></label>
+                <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
+            </div>
+        `;
+        datePickersContainer.append(datePickerHtml);
+    }
+});
 </script>
 
 @endpush

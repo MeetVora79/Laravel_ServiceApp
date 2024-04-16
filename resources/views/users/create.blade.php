@@ -69,7 +69,7 @@
                             <div class="mb-3 row">
                                 <label for="role" class="col-md-2 col-form-label text-md-end text-start"><strong>Roles</strong></label>
                                 <div class="col-md-4">
-                                    <select class="form-control @error('role') is-invalid @enderror select2 col-md-11" id="role" name="role" required>
+                                    <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option>Select Role</option>
                                         @forelse ($roles as $role)
                                             <option value="{{ $role->id }}" {{ in_array($role, $userRoles ?? []) ? 'selected' : '' }}>

@@ -31,7 +31,7 @@
                             <div class="mb-3 row" id="uncheckedContent" >
                                 <label for="TicketCreaterId" class="col-md-2 col-form-label text-md-end text-start"><strong>Creater Name</strong></label>
                                 <div class="col-md-4">
-                                  <select class="form-control @error('TicketCreaterId') is-invalid @enderror select2 col-md-11" aria-label="Creater Name" id="TicketCreaterId" name="TicketCreaterId" required>
+                                  <select class="form-control @error('TicketCreaterId') is-invalid @enderror " aria-label="Creater Name" id="TicketCreaterId" name="TicketCreaterId" required>
                                    <option>Select Your Name</option>
                                         @forelse ($customers as $customer)
                                             <option value="{{  $customer->CustomerId }}">
@@ -59,7 +59,7 @@
                             <div class="mb-3 row">
                                 <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Asset Name</strong></label>
                                 <div class="col-md-4">
-                                  <select class="form-control @error('TicketAssetId') is-invalid @enderror select2 col-md-11" aria-label="Assets" id="TicketAssetId" name="TicketAssetId"  required>
+                                  <select class="form-control @error('TicketAssetId') is-invalid @enderror " aria-label="Assets" id="TicketAssetId" name="TicketAssetId"  required>
                                    <option>Select Asset </option>
                                         @forelse ($assets as $asset)
                                             <option value="{{  $asset->AssetId }}" {{ (isset($ticket) && $ticket->TicketAssetId  == $asset->AssetId) ? 'selected' : '' }}>
@@ -77,7 +77,7 @@
                             <div class="mb-3 row">
                                 <label for="TicketPriorityId" class="col-md-2 col-form-label text-md-end text-start"><strong>Priority</strong></label>
                                 <div class="col-md-4">
-                                <select class="form-control @error('TicketPriorityId') is-invalid @enderror select2 col-md-11" aria-label="Priority" id="TicketPriorityId" name="TicketPriorityId"  required>
+                                <select class="form-control @error('TicketPriorityId') is-invalid @enderror " aria-label="Priority" id="TicketPriorityId" name="TicketPriorityId"  required>
                                    <option>Select Priority </option>
                                         @forelse ($ticketpriority as $priority)
                                             <option value="{{  $priority->PriorityId }}" {{ (isset($ticket) && $ticket->TicketPriorityId  == $priority->PriorityId) ? 'selected' : '' }}>

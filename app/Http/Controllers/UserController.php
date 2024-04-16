@@ -3,33 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Staff;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
 
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-    //  public function __construct()
-    // {
-    //     $this->middleware('auth');
-    //     $this->middleware('permission:create-user|edit-user|delete-user', ['only' => ['index','show']]);
-    //     $this->middleware('permission:create-user', ['only' => ['create','store']]);
-    //     $this->middleware('permission:edit-user', ['only' => ['edit','update']]);
-    //     $this->middleware('permission:delete-user', ['only' => ['destroy']]);
-    // }
-
-
     /**
      * Display a listing of the resource.
      */
@@ -120,19 +104,19 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, $id): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $user = User::where('id', $id)->first();
+        $userId = Auth::user()->id;
+        dd($userId);
+        $user = User::where('id', $userId)->first();
+        dd($user);
         $input = $request->validate([
             'name' => 'required|string|max:250',
             'email' => 'required|string|email|max:250',
             'password' => 'string|min:8|confirmed',
-            'roles' => 'required',
         ]);
 
         $user->update($input);
-
-        $user->syncRoles($request->roles);
 
         if (empty($request->from)) {
             return redirect()->route('users.index')

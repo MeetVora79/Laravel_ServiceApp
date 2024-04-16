@@ -75,6 +75,13 @@
                                         {{ $asset->organization->OrganizationName}}
                                     </div>
                                 </div>
+
+                                <div class="mb-3 row">
+                                    <label for="AssetLocation" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Location</strong></label>
+                                    <div class="col-md-6" style="line-height: 35px;">
+                                        {{ $asset->AssetLocation }}
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-md-6">
@@ -82,13 +89,6 @@
                                     <label for="AssetCreatedAt" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Created At</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
                                         {{ $asset->AssetCreatedAt }}
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
-                                    <label for="AssetLocation" class="col-md-4 col-form-label text-md-end text-start"><strong>Asset Location</strong></label>
-                                    <div class="col-md-6" style="line-height: 35px;">
-                                        {{ $asset->AssetLocation }}
                                     </div>
                                 </div>
 
@@ -107,6 +107,13 @@
                                 </div>
 
                                 <div class="mb-3 row">
+                                    <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warreanty Expiry Date</strong></label>
+                                    <div class="col-md-6" style="line-height: 35px;">
+                                        {{ $asset->AssetWarrantyExpiryDate }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
                                     <label for="AssetServiceType" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Type</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
                                         <td>{{ $asset->servicetype->ServiceDesc }}</td>
@@ -114,9 +121,9 @@
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warreanty Expiry Date</strong></label>
+                                    <label for="AssetServiceType" class="col-md-4 col-form-label text-md-end text-start"><strong>Number of Service</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
-                                        {{ $asset->AssetWarrantyExpiryDate }}
+                                        <td>{{ $asset->NumberOfServices }}</td>
                                     </div>
                                 </div>
 

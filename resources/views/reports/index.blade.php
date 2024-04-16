@@ -2,11 +2,12 @@
 @section('title', 'Reports & Statistics')
 @push('styles')
 <style>
-	.row-style {
+	.row {
 		display: flex;
 		justify-content: around;
 		flex-wrap: wrap;
 	}
+
 	.product-index {
 		flex: 1;
 		min-width: 300px;
@@ -15,6 +16,7 @@
 		margin: 10px;
 		overflow: auto;
 	}
+
 	#chartContainer1,
 	#chartContainer2,
 	#chartContainer3,
@@ -37,7 +39,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="card">
-					<div class="card-header">	
+					<div class="card-header">
 						<h4>Reports</h4>
 					</div>
 					<div class="container mt-2 ml-5">
@@ -55,23 +57,9 @@
 											<option value="Customers">Customers</option>
 										</select>
 									</div>
-									<!-- <div class="mb-3">
-										<label for="frequency" class="form-label"><strong>Frequency</strong></label>
-										<select class="form-control" id="frequency" name="frequency" required>
-											<option value="Yearly">Yearly</option>
-											<option value="Monthly">Monthly</option>
-											<option value="Weekly">Weekly</option>
-										</select>
-									</div> -->
 									<div class="mb-3">
 										<label class="form-label"><strong>Export As</strong></label>
 										<div class="d-flex align-items-center">
-											<!-- <div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="exportType" id="csv" value="CSV">
-												<label class="form-check-label" for="csv">
-													CSV
-												</label>
-											</div> -->
 											<div class="form-check form-check-inline">
 												<input class="form-check-input" type="radio" name="exportType" id="pdf" value="PDF" checked>
 												<label class="form-check-label" for="pdf">
@@ -107,61 +95,8 @@
 						<h4>Statistics</h4>
 					</div>
 					<div class="card-body mb-3">
-						<!-- <div class="mb-3-row p-3">
-                            <div class="container">
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:black; "><strong>Total Tickets</strong>
-                                            <div><strong>{{ $totalTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:brown;"><strong>Open Tickets</strong>
-                                            <div><strong>{{ $openTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:green;"><strong>Resolved Tickets</strong>
-                                            <div><strong>{{ $resolvedTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:red;"><strong>Closed Tickets</strong>
-                                            <div><strong>{{ $closedTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3-row p-3">
-                            <div class="container">
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:green;"><strong>Assigned Tickets</strong>
-                                            <div><strong>{{ $assignTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:red;"><strong>Unassigned Tickets</strong>
-                                            <div><strong>{{ $unassignTickets }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:Black;"><strong>Scheduled Maintenance</strong>
-                                            <div><strong>{{ $scheduled }}</strong></div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="p-3 border bg-light" style="border-radius: 10px; font-size:larger; color:Brown;"><strong>Unscheduled Maintenance</strong>
-                                            <div><strong>{{ $unscheduled }}</strong></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
 						<div class="container">
-							<div class="row row-style">
+							<div class="row ">
 								<div class="product-index" style="margin-top:30px; border-style:solid">
 									<div id="chartContainer1" style="height: 350px; width: 450px;">
 									</div>
@@ -281,7 +216,7 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false 
+				maintainAspectRatio: false
 			}
 		});
 		chart.render();
@@ -307,7 +242,7 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false 
+				maintainAspectRatio: false
 			}
 		});
 		chart.render();
@@ -334,12 +269,12 @@
 			}],
 			options: {
 				responsive: true,
-				maintainAspectRatio: false 
+				maintainAspectRatio: false
 			}
 		});
 		chart.render();
 	}
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script src="https://cdn.canvasjs.com/ga/canvasjs.min.js"></script>
 @endpush

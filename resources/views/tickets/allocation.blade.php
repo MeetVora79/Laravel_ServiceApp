@@ -31,6 +31,24 @@
 		/*Without this, clicking will make it sticky*/
 		pointer-events: none;
 	}
+	.search-box {
+    position: relative;
+    display: inline-block;
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+  }
+
+  .clear-btn:hover {
+    color: red;
+  }
 </style>
 @endpush
 @section('content')
@@ -47,8 +65,14 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="card">
-					<div class="card-header">
+					<div class="card-header  justify-content-between">
 						<h4>List of Allocated Tickets</h4>
+						<div class="search-box form-inline search-element">
+							<form action="{{ route('tickets.allocation') }}" method="GET">
+								<input class="form-control" type="text" name="searchTerm" id="searchTerm" placeholder="Search..." value="{{ request('searchTerm', '') }}" aria-label="Search" data-width="250" required> <span class="clear-btn" onclick="clearAndRedirect()" style="display: none;">×</span>
+								<button class="btn form-control" type="submit"><i class="fas fa-search"></i></button>
+							</form>
+						</div>
 						<div class="card-header-form">
 							<a href="{{ url()->previous() }}" class="btn btn-primary btn-sm">&larr; Back</a>
 						</div>
@@ -142,6 +166,37 @@
 	var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
 		return new bootstrap.Tooltip(tooltipTriggerEl)
 	})
+</script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var searchTermInput = document.getElementById('searchTerm');
+		var cancelButton = document.querySelector('.clear-btn');
+
+		// Show the cancel button when the input field is focused or has text.
+		function toggleCancelButton() {
+			if (searchTermInput.value.length > 0 || searchTermInput === document.activeElement) {
+				cancelButton.style.display = 'inline';
+			} else {
+				cancelButton.style.display = 'none';
+			}
+		}
+
+		// Clear the input and redirect, or just hide the button on clear
+		function clearAndRedirect() {
+			searchTermInput.value = '';
+			toggleCancelButton();
+			searchTermInput.focus();
+			window.location.href = 'http://127.0.0.1:8000/tickets/assigned/list';
+		}
+
+		// Event listeners
+		searchTermInput.addEventListener('input', toggleCancelButton);
+		searchTermInput.addEventListener('focus', toggleCancelButton);
+		searchTermInput.addEventListener('blur', toggleCancelButton);
+
+		toggleCancelButton();
+		cancelButton.onclick = clearAndRedirect;
+	});
 </script>
 
 @endpush

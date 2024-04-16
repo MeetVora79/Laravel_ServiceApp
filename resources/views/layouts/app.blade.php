@@ -57,6 +57,12 @@
     swal("{{ session('error') }}");
   </script>
   @endif
+
+  @if (session('info'))
+  <script>
+   swal("Information", "{{ session('info') }}", "info");
+  </script>
+  @endif
   
   @stack('scripts')
 </body>

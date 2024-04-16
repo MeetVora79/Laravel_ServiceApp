@@ -54,7 +54,7 @@
                                 <div class="mb-3 row">
                                     <label for="AssetManagedBy" class="col-md-4 col-form-label text-md-end text-start"><strong>Maintenance Engineer</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
-                                        {{ $schedule->staff->StaffName }}
+                                        {{ $schedule->asset->staff->StaffName }}
                                     </div>
                                 </div>
 
@@ -112,16 +112,23 @@
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label for="AssetServiceType" class="col-md-4 col-form-label text-md-end text-start"><strong>Maintenance Type</strong></label>
+                                    <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warranty Expiry Date</strong></label>
+                                    <div class="col-md-6" style="line-height: 35px;">
+                                        {{ $schedule->asset->AssetWarrantyExpiryDate }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="AssetServiceType" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Type</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
                                         {{ $schedule->asset->servicetype->ServiceDesc }}
                                     </div>
                                 </div>
 
                                 <div class="mb-3 row">
-                                    <label for="AssetWarrantyExpiryDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Warranty Expiry Date</strong></label>
+                                    <label for="AssetServiceType" class="col-md-4 col-form-label text-md-end text-start"><strong>Number of Service</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
-                                        {{ $schedule->asset->AssetWarrantyExpiryDate }}
+                                    {{  $schedule->asset->NumberOfServices }}
                                     </div>
                                 </div>
 

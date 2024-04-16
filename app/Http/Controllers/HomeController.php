@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -24,5 +25,21 @@ class HomeController extends Controller
     public function profile()
     {
         return view('users.profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $userId = Auth::user()->id;
+        $user = User::where('id', $userId)->first();
+        $input = $request->validate([
+            'name' => 'required|string|max:250',
+            'email' => 'required|string|email|max:250',
+            'password' => 'string|min:8|confirmed',
+        ]);
+
+        $user->update($input);
+
+        return redirect()->route('profile')
+            ->with('success', 'Profile is updated successfully.');
     }
 }

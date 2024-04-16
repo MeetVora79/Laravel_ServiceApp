@@ -14,7 +14,7 @@ class Schedule extends Model
 	use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
 	protected $primaryKey = 'ScheduleId';
-	public $timestamps = false;
+	// public $timestamps = false;
 
 
 	/**
@@ -25,9 +25,7 @@ class Schedule extends Model
 
 	protected $fillable = [
 		'AssetId',
-		'AssignedId',
 		'ServiceDate',
-		'TimeSlot',
 		'Instruction',
 	];
 

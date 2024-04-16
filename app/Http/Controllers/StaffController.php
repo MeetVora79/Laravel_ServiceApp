@@ -29,6 +29,9 @@ class StaffController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('roles', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('name', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 

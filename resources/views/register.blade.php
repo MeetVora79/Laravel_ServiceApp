@@ -24,13 +24,13 @@
                 <div class="row">
                   <div class="form-group col-12">
                     <label for="frist_name">Name</label>
-                    <input id="frist_name" type="text" class="form-control" name="name" autofocus>
+                    <input id="frist_name" type="text" class="form-control" name="name" value="{{old('name')}}" autofocus>
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="email">Email</label>
-                  <input id="email" type="email" class="form-control" name="email">
+                  <input id="email" type="email" class="form-control" name="email" value="{{old('email')}}">
                   <div class="invalid-feedback">
                   </div>
                 </div>
@@ -56,6 +56,9 @@
                 </div>
               </form>
             </div>
+          </div>
+          <div class="text-muted text-center">
+            If You're already registered! <a href="/">Login</a>
           </div>
           <div class="simple-footer">
           Copyright &copy; 2024,&nbsp; All Rights Reserved.

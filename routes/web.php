@@ -8,7 +8,6 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EngineerController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\FieldinfoController;
-use App\Http\Controllers\ReportController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -37,7 +36,10 @@ Route::group(['prefix' => 'enduser', 'middleware' => ['web', 'isEnduser']], func
     Route::get('/dashboard', [EnduserController::class, 'dashboard'])->name('enduser.dashboard');
 });
 
+Route::get('/forgot-password', [App\Http\Controllers\AuthController::class, 'forgotPassword'])->name('forgotpassword');
+Route::post('/set-password', [App\Http\Controllers\AuthController::class, 'setPassword'])->name('setpwd');
 Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
+Route::put('/update-profile', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 
 
 // Routes for User
@@ -173,8 +175,8 @@ Route::group(['prefix' => 'permissions'], function () {
 
 // Routes for Report
 Route::group(['prefix' => 'reports'], function () {
-    Route::get('/statistics/view', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/statistics/generate/view/file', [ReportController::class, 'generateReport'])->name('reports.generate');
+    Route::get('/', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::post('/statistics/generate/file', [App\Http\Controllers\ReportController::class, 'generateReport'])->name('reports.generate');
 });
 
 

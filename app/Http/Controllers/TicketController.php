@@ -59,6 +59,19 @@ class TicketController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('priorityticket', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('PriorityName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('statusticket', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 
@@ -88,6 +101,19 @@ class TicketController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('priorityticket', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('PriorityName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('statusticket', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 
@@ -162,7 +188,22 @@ class TicketController extends Controller
         $sort = $request->get('sort', 'AllocationId');
         $direction = $request->get('direction', 'asc');
 
+        $searchTerm = $request->input('searchTerm');
         $allocationQuery = Allocation::query();
+
+        if (!empty($searchTerm)) {
+            $allocationQuery->where(function ($query) use ($searchTerm) {
+                $columns = Schema::getColumnListing('allocations');
+                foreach ($columns as $index => $column) {
+                    $method = $index === 0 ? 'where' : 'orWhere';
+                    $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
+                }
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
+                });
+            });
+        }
+
         $allocationQuery->orderBy($sort, $direction);
         $allocation =  $allocationQuery->paginate(10);
 
@@ -187,6 +228,9 @@ class TicketController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 
@@ -246,14 +290,6 @@ class TicketController extends Controller
         $request->Attachments->move(public_path('uploads'), $originalFileName);
         $ticket->Attachments = $originalFileName;
         $ticket->save();
-
-        $notification = new \App\Models\Notification();
-        $notification->title = "New Ticket Submitted";
-        $notification->message = "A new ticket with the subject '{$ticket->TicketSubject}' has been submitted by user ID: {$ticket->TicketCreaterId}.";
-        $notification->type = 'new_ticket';
-        $notification->status = 'unread'; 
-        $notification->save();
-
         return redirect()->route('mytickets')
             ->with('success', 'Your Ticket is Created Successfully.');
     }

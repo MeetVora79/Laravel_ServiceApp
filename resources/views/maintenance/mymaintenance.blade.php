@@ -58,7 +58,8 @@
                   <th scope="col">Customer Name</th>
                   <th scope="col">Maintenance Engineer</th>
                   <th scope="col">Maintenance Status</th>
-                  <th scope="col">Maintenance Type</th>
+                  <th scope="col">Service Type</th>
+                  <th scope="col">Total Services</th>
                   <th scope="col">Warranty Expiry Date<a href="{{ route('maintenance.index', ['sort' => 'AssetWarrantyExpiryDate', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
                   <th scope="col">Asset Image</th>
                   <th scope="col">Action</th>
@@ -71,6 +72,7 @@
                   <td>{{ $asset->staff->StaffName  }}</td>
                   <td>{{ $asset->maintenanceStatus }}</td>
                   <td>{{ $asset->servicetype->ServiceDesc }}</td>
+                  <td>{{ $asset->NumberOfServices }}</td>
                   <td>{{ $asset->AssetWarrantyExpiryDate }}</td>
                   <td><img style="width:80px; height:80px" src="{{asset('uploads/'.$asset->AssetImage)}}" alt="No Image Found!!"></td>
                   <td>

@@ -23,7 +23,7 @@ class EnduserController extends Controller
 		$data = [];
 		$priorityData = [];
 		$MaintenanceData = [];
-		
+
 		$post = DB::table('tickets')
 			->where('TicketCreaterId', $TicketCusId)
 			->join('statustickets', 'tickets.TicketStatusId', '=', 'statustickets.Statusid')
@@ -31,6 +31,7 @@ class EnduserController extends Controller
 			->groupBy('statustickets.StatusName')
 			->get()
 			->toArray();
+
 		$priority = DB::table('tickets')
 			->where('TicketCreaterId', $TicketCusId)
 			->join('prioritytickets', 'tickets.TicketPriorityId', '=', 'prioritytickets.Priorityid')
@@ -38,14 +39,19 @@ class EnduserController extends Controller
 			->groupBy('prioritytickets.PriorityName')
 			->get()
 			->toArray();
-		$AssetCusId = Asset::where('AssetCusId',$TicketCusId)->pluck('AssetId');
+
+		$AssetCusId = Asset::where('AssetCusId', $TicketCusId)
+			->distinct()
+			->get(['AssetId'])
+			->pluck('AssetId');
 		$asset = DB::table('schedules')
 			->whereIn('AssetId', $AssetCusId)
 			->join('maintenancestates', 'schedules.MaintenanceStatusId', '=', 'maintenancestates.StatusId')
-			->select('maintenancestates.StatusName as label', DB::raw('count(schedules.ScheduleId) as y'))
+			->select('maintenancestates.StatusName as label', DB::raw('count(DISTINCT schedules.AssetId) as y'))
 			->groupBy('maintenancestates.StatusName')
 			->get()
 			->toArray();
+
 		$startDate = $request->input('startDate', date('Y-m-01'));
 		$endDate = $request->input('endDate', date('Y-m-d'));
 		$ticketsByDate = DB::table('tickets')

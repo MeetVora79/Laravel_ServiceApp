@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
+use App\Models\Allocation;
 use Illuminate\Http\Request;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Auth;
@@ -13,37 +13,57 @@ class EngineerController extends Controller
 	public function dashboard(Request $request)
 	{
 		$userId = Auth::user()->id;
-		$TicketStaffId = Staff::where('user_id',$userId)->value('StaffId');
-		$totalTickets = Ticket::where('TicketCreaterId', $TicketStaffId)->count();
-		$openTickets = Ticket::where('TicketCreaterId', $TicketStaffId)->where('TicketStatusId', 1)->count();
-		$closedTickets =  Ticket::where('TicketCreaterId', $TicketStaffId)->where('TicketStatusId', 2)->count();
-		$resolvedTickets =  Ticket::where('TicketCreaterId', $TicketStaffId)->where('TicketStatusId', 3)->count();
+		$TicketStaffId = Staff::where('user_id', $userId)->value('StaffId');
+		$totalTickets = Allocation::where('AssignId', $TicketStaffId)->count();
+		$openTickets = Allocation::join('tickets', 'allocations.TicketId', '=', 'tickets.TicketId')
+			->where('allocations.AssignId', $TicketStaffId)
+			->where('tickets.TicketStatusId', 1)
+			->count();
+		$closedTickets =  Allocation::join('tickets', 'allocations.TicketId', '=', 'tickets.TicketId')
+			->where('allocations.AssignId', $TicketStaffId)
+			->where('tickets.TicketStatusId', 2)
+			->count();
+		$resolvedTickets =  Allocation::join('tickets', 'allocations.TicketId', '=', 'tickets.TicketId')
+			->where('allocations.AssignId', $TicketStaffId)
+			->where('tickets.TicketStatusId', 3)
+			->count();
 
 		$data = [];
 		$priorityData = [];
 		$assetData = [];
-		$post = DB::table('tickets')
+		$post = DB::table('allocations')
+			->join('tickets', 'allocations.TicketId', '=', 'tickets.TicketId')
 			->join('statustickets', 'tickets.TicketStatusId', '=', 'statustickets.Statusid')
+			->where('allocations.AssignId', $TicketStaffId)
 			->select('statustickets.StatusName as label', DB::raw('count(tickets.TicketId) as y'))
 			->groupBy('statustickets.StatusName')
 			->get()
 			->toArray();
-		$priority = DB::table('tickets')
+
+		$priority = DB::table('allocations')
+			->join('tickets', 'allocations.TicketId', '=', 'tickets.TicketId')
 			->join('prioritytickets', 'tickets.TicketPriorityId', '=', 'prioritytickets.Priorityid')
+			->where('allocations.AssignId', $TicketStaffId)
 			->select('prioritytickets.PriorityName as label', DB::raw('count(tickets.TicketId) as y'))
 			->groupBy('prioritytickets.PriorityName')
 			->get()
 			->toArray();
+
 		$asset = DB::table('schedules')
+			->join('assets', 'schedules.AssetId', '=', 'assets.AssetId')
+			->where('assets.AssetManagedBy', $TicketStaffId)
 			->join('maintenancestates', 'schedules.MaintenanceStatusId', '=', 'maintenancestates.StatusId')
-			->select('maintenancestates.StatusName as label', DB::raw('count(schedules.ScheduleId) as y'))
+			->select('maintenancestates.StatusName as label', DB::raw('count(DISTINCT schedules.AssetId) as y'))
 			->groupBy('maintenancestates.StatusName')
-			->get()->toArray();
+			->get()
+			->toArray();
+
 		$startDate = $request->input('startDate', date('Y-m-01'));
 		$endDate = $request->input('endDate', date('Y-m-d'));
-		$ticketsByDate = DB::table('tickets')
-			->select(DB::raw('DATE(TicketCreatedAt) as date'), DB::raw('count(*) as count'))
-			->whereBetween('TicketCreatedAt', [$startDate . " 00:00:00", $endDate . " 23:59:59"])
+		$ticketsByDate = DB::table('allocations')
+			->where('allocations.AssignId', $TicketStaffId)
+			->select(DB::raw('DATE(ServiceDate) as date'), DB::raw('count(*) as count'))
+			->whereBetween('ServiceDate', [$startDate . " 00:00:00", $endDate . " 23:59:59"])
 			->groupBy('date')
 			->orderBy('date', 'ASC')
 			->get();
@@ -67,6 +87,7 @@ class EngineerController extends Controller
 				'y' => $row->y,
 			);
 		}
+
 		foreach ($asset as $row) {
 			$assetData[] = array(
 				'label' => $row->label,
@@ -74,6 +95,6 @@ class EngineerController extends Controller
 			);
 		}
 
-		return view('engineer.dashboard', compact('data', 'priorityData', 'assetData','chartData', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets'));
+		return view('engineer.dashboard', compact('data', 'priorityData', 'assetData', 'chartData', 'totalTickets', 'openTickets', 'closedTickets', 'resolvedTickets'));
 	}
 }

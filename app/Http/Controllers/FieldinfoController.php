@@ -3,17 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use App\Models\User;
-use App\Models\Asset;
-use App\Models\Customer;
-use App\Models\Statusticket;
-use App\Models\Priorityticket;
 use App\Models\Allocation;
-use App\Models\Assettype;
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+
 
 
 class FieldinfoController extends Controller

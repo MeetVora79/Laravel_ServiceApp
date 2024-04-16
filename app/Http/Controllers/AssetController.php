@@ -38,6 +38,25 @@ class AssetController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('assettype', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('AssetTypeName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('department', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('DepartmentName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('organization', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('OrganizationName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('servicetype', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('ServiceDesc', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 
@@ -70,6 +89,25 @@ class AssetController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
+                $query->orWhereHas('assettype', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('AssetTypeName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('department', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('DepartmentName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('organization', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('OrganizationName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                });
+                $query->orWhereHas('servicetype', function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('ServiceDesc', 'LIKE', '%' . $searchTerm . '%');
+                });
             });
         }
 
@@ -119,22 +157,27 @@ class AssetController extends Controller
             'AssetLocation' => ['required', 'string', 'max:255'],
             'AssetManagedBy' => ['required', 'integer', 'exists:users,id'],
             'AssetPurchaseDate' => ['required', 'string', 'date'],
+            'AssetWarrantyExpiryDate' => ['required', 'string', 'date'],
             'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
-            'AssetWarrantyExpiryDate' => ['string', 'date'],
+            'NumberOfServices' => 'required|integer',
             'AssetImage' => ['file'],
 
         ]);
 
         if ($request->hasFile('AssetImage')) {
             $originalFileName = $request->AssetImage->getClientOriginalName();
-            // $fileName = time() . '.' . $request->AssetImage->extension();
             $request->AssetImage->move(public_path('uploads'), $originalFileName);
             $validatedData['AssetImage'] = $originalFileName;
         }
 
-        Asset::create($validatedData);
-        return redirect()->route('assets.index')
-            ->with('success', 'Asset is Created Successfully.');
+        try {
+            $asset = new Asset($validatedData);
+            $asset->save();
+
+            return redirect()->route('assets.index')->with('success', 'Asset is created successfully');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -178,29 +221,26 @@ class AssetController extends Controller
             'AssetLocation' => ['required', 'string', 'max:255'],
             'AssetManagedBy' => ['required', 'integer', 'exists:staffs,StaffId'],
             'AssetPurchaseDate' => ['required', 'string', 'date'],
-            'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
             'AssetWarrantyExpiryDate' => ['string', 'date'],
+            'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
+            'NumberOfServices' => 'required|integer',
             'AssetImage' => ['file'],
 
         ]);
 
         if ($request->hasFile('AssetImage')) {
             $originalFileName = $request->AssetImage->getClientOriginalName();
-            // $fileName = time() . '.' . $request->AssetImage->extension();
             $request->AssetImage->move(public_path('uploads'), $originalFileName);
             $validatedData['AssetImage'] = $originalFileName;
         }
 
-        $asset = Asset::where('AssetId', $AssetId)->first();
-        $asset->update($validatedData);
+        try {
+            $asset = Asset::where('AssetId', $AssetId)->first();
+            $asset->update($validatedData);
 
-
-        if (empty($request->from)) {
-            return redirect()->route('assets.index')
-                ->with('success','Asset is Updated Successfully.');
-        } else {
-            return redirect()->route('assets.edit')
-                ->with('error','Something Went Wrong.');
+            return redirect()->route('assets.index')->with('success', 'Asset is Updated Successfully');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -211,7 +251,7 @@ class AssetController extends Controller
     {
         $asset = Asset::where('AssetId', $AssetId)->first();
         $asset->delete();
-        return redirect()->route('assets.index')->with('success','Asset is Deleted Successfully.');
+        return redirect()->route('assets.index')->with('success', 'Asset is Deleted Successfully.');
     }
 
 
@@ -232,8 +272,6 @@ class AssetController extends Controller
         Assettype::create($input);
 
         return redirect()->route('assets.create')
-            ->with('success','New Asset Type is Added Successfully.');
+            ->with('success', 'New Asset Type is Added Successfully.');
     }
-
-
 }
