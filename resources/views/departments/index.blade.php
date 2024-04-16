@@ -59,6 +59,7 @@
                     </td>
                 @endforelse
                 </table>
+                {{ $departments->links() }}
               </div>
             </div>
           </div>

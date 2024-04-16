@@ -89,6 +89,7 @@
                 </td>
                 @endforelse
               </table>
+              {{ $assets->links() }}
             </div>
           </div>
         </div>

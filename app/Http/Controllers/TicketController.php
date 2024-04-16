@@ -360,7 +360,7 @@ class TicketController extends Controller
                 ->with('success', 'Ticket is Updated Successfully.');
         } else {
             return redirect()->route('tickets.edit')
-                ->with('error', 'Something went Wrong.');
+                ->with('error', 'Something went Wrong.')->withInput();
         }
     }
 
@@ -387,7 +387,7 @@ class TicketController extends Controller
                 ->with('success', 'Ticket is Updated Successfully.');
         } else {
             return redirect()->route('tickets.myedit')
-                ->with('error', 'Something went Wrong.');
+                ->with('error', 'Something went Wrong.')->withInput();
         }
     }
 

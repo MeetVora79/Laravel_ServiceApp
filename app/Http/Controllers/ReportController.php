@@ -9,6 +9,7 @@ use App\Models\Allocation;
 use App\Models\Schedule;
 use App\Models\Asset;
 use App\Models\Customer;
+use App\Models\Staff;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +56,7 @@ class ReportController extends Controller
 			'Tickets' => Ticket::class,
 			'Assets' => Asset::class,
 			'Maintenance' => Schedule::class,
+			'Staff' => Staff::class,
 		];
 		return $map[$type] ?? null;
 	}

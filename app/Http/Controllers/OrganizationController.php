@@ -81,7 +81,7 @@ class OrganizationController extends Controller
                 ->with('success','Organization is Updated Successfully.');
         }else{
             return redirect()->route('organizations.edit')
-                ->with('error','Something went Wrong.');
+                ->with('error','Something went Wrong.')->withInput();
         }
     }
 

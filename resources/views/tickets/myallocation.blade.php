@@ -146,6 +146,7 @@
 								</td>
 								@endforelse
 							</table>
+							{{ $allocation->links() }}
 						</div>
 					</div>
 				</div>

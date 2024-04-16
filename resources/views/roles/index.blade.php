@@ -53,7 +53,6 @@
                                         @endif
                                     @endcan
                                 @endif
-
                             </form>
                         </td>
                     </tr>

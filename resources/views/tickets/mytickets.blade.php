@@ -136,6 +136,7 @@
                 </td>
                 @endforelse
               </table>
+              {{ $tickets->links() }}
             </div>
           </div>
         </div>

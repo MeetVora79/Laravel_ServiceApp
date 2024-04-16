@@ -45,9 +45,7 @@
 
                                 @can('delete-permission')
                                     <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" onclick="return confirm('Do you want to delete this role?');"><i class="bi bi-trash"></i> </button>
-
                                 @endcan
-
                             </form>
                         </td>
                     </tr>

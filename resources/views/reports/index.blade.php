@@ -55,6 +55,7 @@
 											<option value="Assets">Assets</option>
 											<option value="Maintenance">Maintenance</option>
 											<option value="Customers">Customers</option>
+											<option value="Staff">Staff</option>
 										</select>
 									</div>
 									<div class="mb-3">
@@ -275,6 +276,5 @@
 		chart.render();
 	}
 </script>
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script src="https://cdn.canvasjs.com/ga/canvasjs.min.js"></script>
 @endpush

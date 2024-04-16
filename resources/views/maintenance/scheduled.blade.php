@@ -149,7 +149,6 @@
 											@if(auth()->user()->role == 1 || auth()->user()->role == 2)
 											<button type="submit" class="btn btn-danger btn-sm m-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" onclick="return confirm('Do you want to delete this Schedule?');"><i class="bi bi-trash"></i> </button>
 											@endif
-
 										</form>
 									</td>
 								</tr>

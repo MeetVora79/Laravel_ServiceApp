@@ -90,6 +90,7 @@
                     </td>
                 @endforelse
                 </table>
+                {{ $customers->links() }}
               </div>
             </div>
           </div>

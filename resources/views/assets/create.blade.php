@@ -248,120 +248,17 @@
         $('.select2').select2();
     });
 </script>
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Load saved data from LocalStorage
-        if (localStorage.getItem('AssetName')) {
-            document.getElementById('AssetName').value = localStorage.getItem('AssetName');
-        }
-        document.getElementById('AssetName').addEventListener('input', function() {
-            localStorage.setItem('AssetName', this.value);
-        });
 
-        if (localStorage.getItem('AssetSerialNum')) {
-            document.getElementById('AssetSerialNum').value = localStorage.getItem('AssetSerialNum');
-        }
-        document.getElementById('AssetSerialNum').addEventListener('input', function() {
-            localStorage.setItem('AssetSerialNum', this.value);
-        });
-
-        if (localStorage.getItem('AssetDescription')) {
-            document.getElementById('AssetDescription').value = localStorage.getItem('AssetDescription');
-        }
-        document.getElementById('AssetDescription').addEventListener('input', function() {
-            localStorage.setItem('AssetDescription', this.value);
-        });
-
-        if (localStorage.getItem('AssetLocation')) {
-            document.getElementById('AssetLocation').value = localStorage.getItem('AssetLocation');
-        }
-        document.getElementById('AssetLocation').addEventListener('input', function() {
-            localStorage.setItem('AssetLocation', this.value);
-        });
-
-
-        // Assuming you're using jQuery for the select2 plugin
-        $('#AssetCusId').on('change', function() {
-            localStorage.setItem('AssetCusId', this.value);
-        });
-        if (localStorage.getItem('AssetCusId')) {
-            $('#AssetCusId').val(localStorage.getItem('AssetCusId')).trigger('change');
-        }
-
-        $('#AssetTypeId').on('change', function() {
-            localStorage.setItem('AssetTypeId', this.value);
-        });
-        if (localStorage.getItem('AssetTypeId')) {
-            $('#AssetTypeId').val(localStorage.getItem('AssetTypeId')).trigger('change');
-        }
-
-        $('#AssetDepartmentId').on('change', function() {
-            localStorage.setItem('AssetDepartmentId', this.value);
-        });
-        if (localStorage.getItem('AssetDepartmentId')) {
-            $('#AssetDepartmentId').val(localStorage.getItem('AssetDepartmentId')).trigger('change');
-        }
-
-        $('#AssetOrganizationId').on('change', function() {
-            localStorage.setItem('AssetOrganizationId', this.value);
-        });
-        if (localStorage.getItem('AssetOrganizationId')) {
-            $('#AssetOrganizationId').val(localStorage.getItem('AssetOrganizationId')).trigger('change');
-        }
-
-        $('#AssetManagedBy').on('change', function() {
-            localStorage.setItem('AssetManagedBy', this.value);
-        });
-        if (localStorage.getItem('AssetManagedBy')) {
-            $('#AssetManagedBy').val(localStorage.getItem('AssetManagedBy')).trigger('change');
-        }
-
-        $('#AssetServiceTypeId').on('change', function() {
-            localStorage.setItem('AssetServiceTypeId', this.value);
-        });
-        if (localStorage.getItem('AssetServiceTypeId')) {
-            $('#AssetServiceTypeId').val(localStorage.getItem('AssetServiceTypeId')).trigger('change');
-        }
-
-        // Assuming the date input field has an ID of 'AssetDate'
-        const assetDateInput = document.getElementById('AssetPurchaseDate');
-        const savedDate = localStorage.getItem('AssetPurchaseDate');
-        if (savedDate) {
-            assetDateInput.value = savedDate;
-        }
-        assetDateInput.addEventListener('change', function() {
-            localStorage.setItem('AssetPurchaseDate', this.value);
-        });
-
-        const ExpiryDate = document.getElementById('AssetWarrantyExpiryDate');
-        const saveDate = localStorage.getItem('AssetWarrantyExpiryDate');
-        if (saveDate) {
-            ExpiryDate.value = saveDate;
-        }
-        ExpiryDate.addEventListener('change', function() {
-            localStorage.setItem('AssetWarrantyExpiryDate', this.value);
-        });
-
-    });
-</script> -->
-
-<!-- <script>
+<!--         
+<script>
     document.addEventListener('DOMContentLoaded', (event) => {
         // Load saved data from LocalStorage
         loadFormData();
 
         // Listen to form submit event
         document.querySelector('form').addEventListener('submit', function(event) {
-            // Prevent the default form submission to handle the data first
-            // event.preventDefault();
             
-            // You can add your validation or AJAX submission logic here
-            
-            // Assuming the AJAX call or validation is successful, clear localStorage
             localStorage.clear();
-
-            // You might want to submit the form programmatically if you are not doing AJAX and prevented the default action
-            // this.submit(); // Uncomment if needed, ensure you're not causing an infinite loop
         });
     });
 
@@ -398,41 +295,45 @@
 <!-- <script>
     document.addEventListener('DOMContentLoaded', (event) => {
         const form = document.querySelector('form');
+        const fields = ['AssetName', 'AssetSerialNum', 'AssetDescription', 'AssetLocation',
+            'AssetCusId', 'AssetTypeId', 'AssetDepartmentId', 'AssetOrganizationId',
+            'AssetManagedBy', 'AssetServiceTypeId', 'AssetPurchaseDate', 'AssetWarrantyExpiryDate'
+        ];
         if (form) {
+            document.querySelectorAll('form input, form select').forEach(element => {
+                const savedValue = sessionStorage.getItem(element.name);
+                if (savedValue) {
+                    element.value = savedValue;
+                }
+                // Save data on change
+                element.addEventListener('input', () => {
+                    sessionStorage.setItem(element.name, element.value);
+                });
+            });
+
+            if ($('.select').length) {
+                $('.select').each(function() {
+                    // Initialize Select
+                    $(this).select();
+
+                    // Restore value from sessionStorage
+                    const savedValue = sessionStorage.getItem(this.name);
+                    if (savedValue !== null) {
+                        $(this).val(savedValue).trigger('change');
+                    }
+
+                    // Save data on change
+                    $(this).on('change', function() {
+                        sessionStorage.setItem(this.name, $(this).val());
+                    });
+                });
+            }
+
             form.addEventListener('submit', function(event) {
-                sessionStorage.clear(); // Clears all sessionStorage
+                fields.forEach(field => sessionStorage.removeItem(field));
             });
         } else {
             console.log("Form not found");
-        }
-        // Restoration of form data
-        document.querySelectorAll('form input, form select').forEach(element => {
-            const savedValue = sessionStorage.getItem(element.name);
-            if (savedValue) {
-                element.value = savedValue;
-            }
-            // Save data on change
-            element.addEventListener('input', function() {
-                sessionStorage.setItem(this.name, this.value);
-            });
-        });
-
-        if ($('.select2').length) {
-            $('.select2').each(function() {
-                // Initialize Select2
-                $(this).select2();
-
-                // Restore value from sessionStorage
-                const savedValue = sessionStorage.getItem(this.name);
-                if (savedValue !== null) {
-                    $(this).val(savedValue).trigger('change');
-                }
-
-                // Save data on change
-                $(this).on('change', function() {
-                    sessionStorage.setItem(this.name, $(this).val());
-                });
-            });
         }
     });
 </script> -->

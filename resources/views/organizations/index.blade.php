@@ -60,6 +60,7 @@
                     </td>
                 @endforelse
                 </table>
+                {{ $organizations->links() }}
               </div>
             </div>
           </div>

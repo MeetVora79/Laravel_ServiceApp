@@ -119,7 +119,7 @@ class StaffController extends Controller
                 ->with('success','Staff is updated Successfully.');
         } else {
             return redirect()->route('users.edit')
-                ->with('error','Something Went Wrong.');
+                ->with('error','Something Went Wrong.')->withInput();
         }
     }
 

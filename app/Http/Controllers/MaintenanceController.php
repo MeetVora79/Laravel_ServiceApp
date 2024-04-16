@@ -142,7 +142,7 @@ class MaintenanceController extends Controller
             }
             return redirect()->route('maintenance.scheduled')->with('success', 'Maintenance for your asset is scheduled successfully');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -298,7 +298,7 @@ class MaintenanceController extends Controller
 
             return redirect()->route('maintenance.scheduled')->with('success', 'Your scheduled Maintenance is updated successfully');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 

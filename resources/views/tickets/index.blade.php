@@ -159,6 +159,7 @@
                 </td>
                 @endforelse
               </table>
+              {{ $tickets->links() }}
               @else
               <table class="table table-striped">
                 <td>

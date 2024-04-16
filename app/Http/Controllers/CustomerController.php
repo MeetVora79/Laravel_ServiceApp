@@ -132,7 +132,7 @@ class CustomerController extends Controller
                 ->with('success','Customer is Updated Successfully.');
         }else{
             return redirect()->route('customers.edit')
-                ->with('error','Something went Wrong.');
+                ->with('error','Something went Wrong.')->withInput();
         }
     }
 

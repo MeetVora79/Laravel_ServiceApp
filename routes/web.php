@@ -36,8 +36,13 @@ Route::group(['prefix' => 'enduser', 'middleware' => ['web', 'isEnduser']], func
     Route::get('/dashboard', [EnduserController::class, 'dashboard'])->name('enduser.dashboard');
 });
 
+
+// Routes for Reset-Password
 Route::get('/forgot-password', [App\Http\Controllers\AuthController::class, 'forgotPassword'])->name('forgotpassword');
 Route::post('/set-password', [App\Http\Controllers\AuthController::class, 'setPassword'])->name('setpwd');
+
+
+// Routes for Profile
 Route::get('/profile', [App\Http\Controllers\HomeController::class, 'profile'])->name('profile');
 Route::put('/update-profile', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 
@@ -143,7 +148,6 @@ Route::group(['prefix' => 'maintenance'], function () {
     Route::get('/edit/{ScheduleId}', [App\Http\Controllers\MaintenanceController::class, 'edit'])->name('maintenance.edit');
     Route::put('/update/{ScheduleId}', [App\Http\Controllers\MaintenanceController::class, 'update'])->name('maintenance.update');
     Route::delete('/destroy/{ScheduleId}', [App\Http\Controllers\MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
-
     Route::get('/{schedule}/{status}', [App\Http\Controllers\MaintenanceController::class, 'updateStatus'])->name('maintenanceStatus');
     Route::get('/{schedule}/status/{status}', [App\Http\Controllers\MaintenanceController::class, 'statusUpdate'])->name('StatusUpdate');
 });

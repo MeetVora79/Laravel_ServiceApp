@@ -27,9 +27,9 @@
 			background-color: #f2f2f2;
 		}
 
-		tr td:first-child {		
-			background-color: #f2f2f2;			
-			font-weight: bold;		
+		tr td:first-child {
+			background-color: #f2f2f2;
+			font-weight: bold;
 		}
 	</style>
 </head>
