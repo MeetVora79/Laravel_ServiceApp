@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
+
 class PermissionController extends Controller
 {
     // public function __construct()
@@ -20,14 +22,14 @@ class PermissionController extends Controller
     public function index(): View
     {
         return view('permissions.index', [
-            'permissions' => Permission::orderBy('id','DESC')->paginate(15)
+            'permissions' => Permission::orderBy('id', 'DESC')->paginate(15)
         ]);
     }
 
     public function create(): View
     {
         return view('permissions.create', [
-            'permissions' => Permission::select('id','name')->get(),
+            'permissions' => Permission::select('id', 'name')->get(),
         ]);
     }
 
@@ -37,9 +39,13 @@ class PermissionController extends Controller
         $this->validate(request(), [
             'name' => 'required|unique:permissions'
         ]);
-        $permissions = Permission::create(['name' => $request->name]);
-        return redirect()->route('permissions.index')
-                ->with('success','New Permission is Created Successfully.');
+        try {
+            Permission::create(['name' => $request->name]);
+            return redirect()->route('permissions.index')
+                ->with('success', 'New Permission is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
 
@@ -53,22 +59,29 @@ class PermissionController extends Controller
     public function update(Request $request, string $id)
     {
         $this->validate(request(), [
-            'name' => 'required|unique:permissions,name,'.$id
+            'name' => 'required|unique:permissions,name,' . $id
         ]);
-        $permission = Permission::findById($id);
-        $permission->name = $request->name;
-        $permission->save();
-        return redirect()->route('permissions.index')
-                ->with('success','Permission is updated successfully.');
+        try {
+            $permission = Permission::findById($id);
+            $permission->name = $request->name;
+            $permission->save();
+            return redirect()->route('permissions.index')
+                ->with('success', 'Permission is updated successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
 
     public function destroy(string $id)
     {
-        $permission = Permission::findById($id);
-        $permission->delete();
-        return redirect()->route('permissions.index')
-                ->with('success','Permission is deleted successfully.');
-
+        try {
+            $permission = Permission::findById($id);
+            $permission->delete();
+            return redirect()->route('permissions.index')
+                ->with('success', 'Permission is deleted successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

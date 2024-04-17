@@ -43,9 +43,7 @@
               </form>
             </div>
             <div class="card-header-form">
-              @can('create-user')
               <a href="{{ route('users.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i> Add New Staff</a>
-              @endcan
             </div>
           </div>
           <div class="card-body p-0">

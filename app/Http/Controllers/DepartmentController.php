@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Department;
+use Exception;
 
 class DepartmentController extends Controller
 {
@@ -37,10 +38,13 @@ class DepartmentController extends Controller
         $input = $request->validate([
             'DepartmentName' => "required|string|max:255"
         ]);
-        Department::create($input);
-
-        return redirect()->route('departments.index')
-            ->with('success','New Department is Created Successfully.');
+        try {
+            Department::create($input);
+            return redirect()->route('departments.index')
+                ->with('success', 'New Department is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -70,16 +74,14 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $DepartmentId): RedirectResponse
     {
-        $department = Department::where('DepartmentId', $DepartmentId)->first();
-        $input = $request->all();
-        $department->update($input);
-
-        if (empty($request->from)) {
+        try {
+            $department = Department::where('DepartmentId', $DepartmentId)->first();
+            $input = $request->all();
+            $department->update($input);
             return redirect()->route('departments.index')
-                ->with('success','Department is Updated Successfully.');
-        } else {
-            return redirect()->route('departments.edit')
-                ->with('error','Somrthing went Wrong.');
+                ->with('success', 'Department is Updated Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -88,8 +90,12 @@ class DepartmentController extends Controller
      */
     public function destroy($DepartmentId): RedirectResponse
     {
-        $department = Department::where('DepartmentId', $DepartmentId)->first();
-        $department->delete();
-        return redirect()->route('departments.index')->with('success','Department is Deleted Successfully.');
+        try {
+            $department = Department::where('DepartmentId', $DepartmentId)->first();
+            $department->delete();
+            return redirect()->route('departments.index')->with('success', 'Department is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

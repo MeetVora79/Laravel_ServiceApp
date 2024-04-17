@@ -83,6 +83,7 @@
                                             <span class="text-danger">{{ $errors->first('AssetTypeId') }}</span>
                                             @endif
                                         </div>
+                                        <a href="{{ route('assettype.create') }}" class="btn btn-light btn-sm my-2"><i class=""> </i>New</a>
                                     </div>
 
                                     <div class="mb-3 row">
@@ -202,13 +203,18 @@
                                     <div class="mb-3 row">
                                         <label for="NumberOfServices" class="col-md-4 col-form-label text-md-end text-start"><strong>Number of Services</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control" id="NumberOfServices" name="NumberOfServices" required>
-                                                <option value="">Select Number of Services</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
+                                            <select class="form-control @error('NumberOfServices') is-invalid @enderror " aria-label="Number of Services" id="NumberOfServices" name="NumberOfServices" required>
+                                                <option>Select Number of Services</option>
+                                                @forelse ($numofservices as $service)
+                                                <option value="{{  $service->id }}" {{ (isset($asset) && $asset->NumberOfServices == $service->id) ? 'selected' : '' }}>
+                                                    {{ $service->NumofService }}
+                                                </option>
+                                                @empty
+                                                @endforelse
                                             </select>
+                                            @if ($errors->has('NumberOfServices'))
+                                            <span class="text-danger">{{ $errors->first('NumberOfServices') }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="row" id="datePickersContainer"></div>
@@ -243,34 +249,38 @@
 </section>
 @endsection
 @push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-<script>
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
-</script>
 
 <script>
     $(document).ready(function() {
-        $('#NumberOfServices').on('change', function() {
-            const numberOfServices = $(this).val();
+        function initializeDatePickers() {
+            const purchaseDate = $('#AssetPurchaseDate').val();
+            const numberOfServices = $('#NumberOfServices').val();
             const datePickersContainer = $('#datePickersContainer');
-            datePickersContainer.empty(); // Clear the previous date pickers
 
-            for (let i = 0; i < numberOfServices; i++) {
-                const date = new Date();
-                date.setMonth(date.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
-                const formattedDate = date.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+            if (purchaseDate && numberOfServices) {
+                datePickersContainer.empty();
 
-                const datePickerHtml = `
+                let baseDate = new Date(purchaseDate);
+
+                for (let i = 0; i < numberOfServices; i++) {
+                    let newDate = new Date(baseDate)
+                    newDate.setMonth(newDate.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
+                    const formattedDate = newDate.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+
+                    const datePickerHtml = `
                 <label for="ServiceDate${i+1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i+1}</strong></label>
                     <div class="mb-3 col-md-6">
                         <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
                     </div>
                 `;
-                datePickersContainer.append(datePickerHtml);
+                    datePickersContainer.append(datePickerHtml);
+                }
+            } else {
+                datePickersContainer.empty();
             }
-        });
+        }
+        $('#AssetPurchaseDate, #NumberOfServices').on('change', initializeDatePickers);
+        initializeDatePickers();
     });
 </script>
 

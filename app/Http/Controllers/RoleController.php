@@ -10,18 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use Exception;
 use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    //     $this->middleware('permission:create-role|edit-role|delete-role', ['only' => ['index','show']]);
-    //     $this->middleware('permission:create-role', ['only' => ['create','store']]);
-    //     $this->middleware('permission:edit-role', ['only' => ['edit','update']]);
-    //     $this->middleware('permission:delete-role', ['only' => ['destroy']]);
-    // }
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +22,7 @@ class RoleController extends Controller
     {
         return view('roles.index', [
             'roles' => Role::orderBy('id')->paginate(5)
-        ]); 
+        ]);
     }
 
     /**
@@ -38,7 +31,7 @@ class RoleController extends Controller
     public function create(): View
     {
         return view('roles.create', [
-            'permissions' => Permission::select('id','name')->get()
+            'permissions' => Permission::select('id', 'name')->get()
         ]);
     }
 
@@ -47,14 +40,15 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $role = Role::create(['name' => $request->name]);
-
-        $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
-
-        $role->syncPermissions($permissions);
-
-        return redirect()->route('roles.index')
-                ->with('success','New Role is Created Successfully.');
+        try {
+            $role = Role::create(['name' => $request->name]);
+            $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
+            $role->syncPermissions($permissions);
+            return redirect()->route('roles.index')
+                ->with('success', 'New Role is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -62,9 +56,9 @@ class RoleController extends Controller
      */
     public function show($id): View
     {
-        $role = Role::where('id',$id)->first();
-        $rolePermissions = Permission::join("role_has_permissions","permission_id","=","id")
-            ->where("role_id",$role->id)
+        $role = Role::where('id', $id)->first();
+        $rolePermissions = Permission::join("role_has_permissions", "permission_id", "=", "id")
+            ->where("role_id", $role->id)
             ->select('name')
             ->get();
         return view('roles.show', [
@@ -78,20 +72,20 @@ class RoleController extends Controller
      */
     public function edit($id): View
     {
-        $role = Role::where('id',$id)->first();
-        if($role->name=='Admin'){
+        $role = Role::where('id', $id)->first();
+        if ($role->name == 'Admin') {
             abort(403, 'ADMIN ROLE CAN NOT BE EDITED');
         }
 
-        $rolePermissions = DB::table("role_has_permissions")->where("role_id",$role->id)
+        $rolePermissions = DB::table("role_has_permissions")->where("role_id", $role->id)
             ->pluck('permission_id')
             ->all();
 
         return view('roles.edit', [
             'role' => $role,
-            'permissions' => Permission::select('id','name')->get(),
+            'permissions' => Permission::select('id', 'name')->get(),
             'rolePermissions' => $rolePermissions,
-            'roles' => Role::select('id','name')->get(),
+            'roles' => Role::select('id', 'name')->get(),
         ]);
     }
 
@@ -100,15 +94,19 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, $id): RedirectResponse
     {
-        $role = Role::where('id',$id)->first();
+        $role = Role::where('id', $id)->first();
         $input = $request->only('name');
         $permissions = Permission::whereIn('id', $request->permissions)->get(['name'])->toArray();
-        $role->update($input);
 
-        $role->syncPermissions($permissions);
+        try {
+            $role->update($input);
+            $role->syncPermissions($permissions);
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
 
         return redirect()->back()
-                ->with('success','Role is Updated Successfully.');
+            ->with('success', 'Role is Updated Successfully.');
     }
 
     /**
@@ -116,15 +114,19 @@ class RoleController extends Controller
      */
     public function destroy($id): RedirectResponse
     {
-        $role = Role::where('id',$id)->first();
-        if($role->name=='Admin'){
+        $role = Role::where('id', $id)->first();
+        if ($role->name == 'Admin') {
             abort(403, 'ADMIN ROLE CAN NOT BE DELETED');
         }
-        if(Auth::user()->hasRole($role->name)){
+        if (Auth::user()->hasRole($role->name)) {
             abort(403, 'CAN NOT DELETE SELF ASSIGNED ROLE');
         }
-        $role->delete();
-        return redirect()->route('roles.index')
-                ->with('success','Role is Deleted Successfully.');
+        try {
+            $role->delete();
+            return redirect()->route('roles.index')
+                ->with('success', 'Role is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

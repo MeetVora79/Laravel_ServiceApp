@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Staff;
 use App\Models\Priorityticket;
 use App\Models\Allocation;
+use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -61,7 +62,7 @@ class TicketController extends Controller
                 }
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
@@ -103,7 +104,7 @@ class TicketController extends Controller
                 }
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
@@ -247,15 +248,23 @@ class TicketController extends Controller
     public function assigneestore(Request $request): RedirectResponse
     {
         $input = $request->all();
-        Allocation::create($input);
-        return redirect()->route('tickets.allocation')->withSuccess('Ticket-Allocation is Created Successfully');
+        try {
+            Allocation::create($input);
+            return redirect()->route('tickets.allocation')->withSuccess('Ticket-Allocation is Created Successfully');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function assigneeupdate(Request $request, Allocation $AllocationId): RedirectResponse
     {
         $input = $request->all();
-        $AllocationId->update($input);
-        return redirect()->route('tickets.allocation')->withSuccess('Ticket-Allocation is Updated Successfully');
+        try {
+            $AllocationId->update($input);
+            return redirect()->route('tickets.allocation')->withSuccess('Ticket-Allocation is Updated Successfully');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -263,35 +272,40 @@ class TicketController extends Controller
      */
     public function store(Request $request, Ticket $ticket): RedirectResponse
     {
-
-        $ticket->TicketSubject = $request->TicketSubject;
-        $ticket->TicketCreaterId = $request->TicketCreaterId;
-        $ticket->TicketAssetId = $request->TicketAssetId;
-        $ticket->TicketPriorityId = $request->TicketPriorityId;
-        $ticket->TicketDescription = $request->TicketDescription;
-        $originalFileName = $request->Attachments->getClientOriginalName();
-        $request->Attachments->move(public_path('uploads'), $originalFileName);
-        $ticket->Attachments = $originalFileName;
-        $ticket->save();
-
-        return redirect()->route('tickets.index')
-            ->with('success', 'Your Ticket is Created Successfully.');
+        try {
+            $ticket->TicketSubject = $request->TicketSubject;
+            $ticket->TicketCreaterId = $request->TicketCreaterId;
+            $ticket->TicketAssetId = $request->TicketAssetId;
+            $ticket->TicketPriorityId = $request->TicketPriorityId;
+            $ticket->TicketDescription = $request->TicketDescription;
+            $originalFileName = $request->Attachments->getClientOriginalName();
+            $request->Attachments->move(public_path('uploads'), $originalFileName);
+            $ticket->Attachments = $originalFileName;
+            $ticket->save();
+            return redirect()->route('tickets.index')
+                ->with('success', 'Your Ticket is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function mystore(Request $request, Ticket $ticket): RedirectResponse
     {
-
-        $ticket->TicketSubject = $request->TicketSubject;
-        $ticket->TicketCreaterId = $request->TicketCreaterId;
-        $ticket->TicketAssetId = $request->TicketAssetId;
-        $ticket->TicketPriorityId = $request->TicketPriorityId;
-        $ticket->TicketDescription = $request->TicketDescription;
-        $originalFileName = $request->Attachments->getClientOriginalName();
-        $request->Attachments->move(public_path('uploads'), $originalFileName);
-        $ticket->Attachments = $originalFileName;
-        $ticket->save();
-        return redirect()->route('mytickets')
-            ->with('success', 'Your Ticket is Created Successfully.');
+        try {
+            $ticket->TicketSubject = $request->TicketSubject;
+            $ticket->TicketCreaterId = $request->TicketCreaterId;
+            $ticket->TicketAssetId = $request->TicketAssetId;
+            $ticket->TicketPriorityId = $request->TicketPriorityId;
+            $ticket->TicketDescription = $request->TicketDescription;
+            $originalFileName = $request->Attachments->getClientOriginalName();
+            $request->Attachments->move(public_path('uploads'), $originalFileName);
+            $ticket->Attachments = $originalFileName;
+            $ticket->save();
+            return redirect()->route('mytickets')
+                ->with('success', 'Your Ticket is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -344,23 +358,20 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket): RedirectResponse
     {
-
-        $ticket->TicketSubject = $request->TicketSubject;
-        $ticket->TicketCreaterId = $request->TicketCreaterId;
-        $ticket->TicketAssetId = $request->TicketAssetId;
-        $ticket->TicketPriorityId = $request->TicketPriorityId;
-        $ticket->TicketDescription = $request->TicketDescription;
-        $originalFileName = $request->Attachments->getClientOriginalName();
-        $request->Attachments->move(public_path('uploads'), $originalFileName);
-        $ticket->Attachments = $originalFileName;
-        $ticket->update();
-
-        if (empty($request->from)) {
+        try {
+            $ticket->TicketSubject = $request->TicketSubject;
+            $ticket->TicketCreaterId = $request->TicketCreaterId;
+            $ticket->TicketAssetId = $request->TicketAssetId;
+            $ticket->TicketPriorityId = $request->TicketPriorityId;
+            $ticket->TicketDescription = $request->TicketDescription;
+            $originalFileName = $request->Attachments->getClientOriginalName();
+            $request->Attachments->move(public_path('uploads'), $originalFileName);
+            $ticket->Attachments = $originalFileName;
+            $ticket->update();
             return redirect()->route('tickets.index')
                 ->with('success', 'Ticket is Updated Successfully.');
-        } else {
-            return redirect()->route('tickets.edit')
-                ->with('error', 'Something went Wrong.')->withInput();
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -380,14 +391,12 @@ class TicketController extends Controller
             $input['Attachments'] = $originalFileName;
         }
         $ticket = Ticket::where('TicketId', $TicketId)->first();
-        $ticket->update($input);
-
-        if (empty($request->from)) {
+        try {
+            $ticket->update($input);
             return redirect()->route('mytickets')
                 ->with('success', 'Ticket is Updated Successfully.');
-        } else {
-            return redirect()->route('tickets.myedit')
-                ->with('error', 'Something went Wrong.')->withInput();
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -396,20 +405,32 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket): RedirectResponse
     {
-        $ticket->delete();
-        return redirect()->route('tickets.index')->with('success', 'Ticket is Deleted Successfully.');
+        try {
+            $ticket->delete();
+            return redirect()->route('tickets.index')->with('success', 'Ticket is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function delete(Allocation $allocation): RedirectResponse
     {
-        $allocation->delete();
-        return redirect()->route('tickets.allocation')->with('success', 'Allocation is Deleted Successfully.');
+        try {
+            $allocation->delete();
+            return redirect()->route('tickets.allocation')->with('success', 'Allocation is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function deleteTickets($TicketId): RedirectResponse
     {
-        $ticket = Ticket::where('TicketId', $TicketId)->first();
-        $ticket->delete();
-        return redirect()->route('mytickets')->with('success', 'Ticket is Deleted Successfully.');
+        try {
+            $ticket = Ticket::where('TicketId', $TicketId)->first();
+            $ticket->delete();
+            return redirect()->route('mytickets')->with('success', 'Ticket is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

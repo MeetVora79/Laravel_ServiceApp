@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Organization;
+use Exception;
 
 class OrganizationController extends Controller
 {
@@ -37,12 +38,13 @@ class OrganizationController extends Controller
         $input = $request->validate([
             'OrganizationName' => "required|string|max:255"
         ]);
-        // $input = $request->all();
-
-        Organization::create($input);
-
-        return redirect()->route('organizations.index')
-                ->with('success','New Organization is Created Successfully.');
+        try {
+            Organization::create($input);
+            return redirect()->route('organizations.index')
+                ->with('success', 'New Organization is Created Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -50,7 +52,7 @@ class OrganizationController extends Controller
      */
     public function show($OrganizationId): View
     {
-        $organization = Organization::where('OrganizationID',$OrganizationId)->first();
+        $organization = Organization::where('OrganizationID', $OrganizationId)->first();
         return view('organizations.show', [
             'organization' => $organization
         ]);
@@ -61,7 +63,7 @@ class OrganizationController extends Controller
      */
     public function edit($OrganizationId): View
     {
-        $organization = Organization::where('OrganizationID',$OrganizationId)->first();
+        $organization = Organization::where('OrganizationID', $OrganizationId)->first();
         return view('organizations.edit', [
             'organization' => $organization,
         ]);
@@ -72,16 +74,14 @@ class OrganizationController extends Controller
      */
     public function update(Request $request, $OrganizationId): RedirectResponse
     {
-        $organization = Organization::where('OrganizationID',$OrganizationId)->first();
-        $input = $request->all();
-        $organization->update($input);
-
-        if(empty($request->from)){
-        return redirect()->route('organizations.index')
-                ->with('success','Organization is Updated Successfully.');
-        }else{
-            return redirect()->route('organizations.edit')
-                ->with('error','Something went Wrong.')->withInput();
+        try {
+            $organization = Organization::where('OrganizationID', $OrganizationId)->first();
+            $input = $request->all();
+            $organization->update($input);
+            return redirect()->route('organizations.index')
+                ->with('success', 'Organization is Updated Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -90,8 +90,12 @@ class OrganizationController extends Controller
      */
     public function destroy($OrganizationId): RedirectResponse
     {
-        $organization = Organization::where('OrganizationID',$OrganizationId)->first();
-        $organization->delete();
-        return redirect()->route('organizations.index')->with('success','Organization is Deleted Successfully.');
+        try {
+            $organization = Organization::where('OrganizationID', $OrganizationId)->first();
+            $organization->delete();
+            return redirect()->route('organizations.index')->with('success', 'Organization is Deleted Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

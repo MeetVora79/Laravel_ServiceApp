@@ -37,6 +37,23 @@
 									@endif
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label for="AssignedId"><strong>Assigned Engineer</strong></label>
+								<select class="form-control @error('AssignedId') is-invalid @enderror" aria-label="Asset Type" id="AssignedId" name="AssignedId" required>
+									<option>Select Type</option>
+									@forelse ($staffs as $staff)
+									<option value="{{  $staff->StaffId }}" {{ (isset($asset) && $asset->AssetManagedBy == $staff->StaffId) ? 'selected' : '' }}>
+										{{ $staff->StaffName }}
+									</option>
+									@empty
+									@endforelse
+								</select>
+								@if ($errors->has('AssetTypeId'))
+								<span class="text-danger">{{ $errors->first('AssetTypeId') }}</span>
+								@endif
+							</div>
+
 							<div class="form-group">
 								<label for="NumberOfServices"><strong>Number of Services</strong></label>
 								<input type="text" class="form-control" name="NumberOfServices" id="NumberOfServices" aria-describedby="NumberOfServices" value="{{$asset->NumberOfServices}}" required readonly>
@@ -60,27 +77,27 @@
 </section>
 @endsection
 @push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
+
 <script>
 	$(document).ready(function() {
-    const numberOfServices = $('#NumberOfServices').val();
-    const datePickersContainer = $('#datePickersContainer');
-    datePickersContainer.empty(); 
+		const numberOfServices = $('#NumberOfServices').val();
+		const datePickersContainer = $('#datePickersContainer');
+		datePickersContainer.empty();
 
-    for (let i = 0; i < numberOfServices; i++) {
-        const date = new Date();
-        date.setMonth(date.getMonth() + 3 * (i + 1)); 
-        const formattedDate = date.toISOString().split('T')[0]; 
+		for (let i = 0; i < numberOfServices; i++) {
+			const date = new Date();
+			date.setMonth(date.getMonth() + 3 * (i + 1));
+			const formattedDate = date.toISOString().split('T')[0];
 
-        const datePickerHtml = `
+			const datePickerHtml = `
             <div class="form-group">
                 <label for="ServiceDate${i+1}"><strong>Service Date ${i+1}</strong></label>
                 <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
             </div>
         `;
-        datePickersContainer.append(datePickerHtml);
-    }
-});
+			datePickersContainer.append(datePickerHtml);
+		}
+	});
 </script>
 
 @endpush

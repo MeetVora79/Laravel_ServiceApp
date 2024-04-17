@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\Staff;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,9 +34,10 @@ class AuthController extends Controller
 
 		try {
 			$customerExists = Customer::where('email', $validatedData['email'])->exists();
-			if (!$customerExists) {
-				return back()->with('info', 'Only existing customers can register.')->withInput();
-			}
+			$staffExists = Staff::where('email', $validatedData['email'])->exists();
+			if (!$customerExists && !$staffExists) {
+				return back()->with('info', 'Only existing customers or staffs can register.')->withInput();
+			} 
 			User::create($validatedData);
 			return redirect('/')->with('success', 'Your Registration has been successful.');
 		} catch (QueryException $e) {

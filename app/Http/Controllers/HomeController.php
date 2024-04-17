@@ -24,6 +24,7 @@ class HomeController extends Controller
      */
     public function profile()
     {
+        // $roleName = Auth::user()->role;
         return view('users.profile');
     }
 

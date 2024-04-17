@@ -45,10 +45,7 @@
                 <div class="mb-3 row">
                     <label for="roles" class="col-md-4 col-form-label text-md-end text-start"><strong>Roles:</strong></label>
                     <div class="col-md-6" style="line-height: 35px;">                   
-                        @forelse ($user->getRoleNames() as $role)
-                            <span class="badge bg-primary">{{ $role }}</span>
-                        @empty
-                        @endforelse                  
+                      <span class="badge bg-primary">{{ $user->roleRelation->name }}</span>
                     </div>
                 </div>
                 @endif

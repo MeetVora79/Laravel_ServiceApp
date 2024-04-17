@@ -11,6 +11,7 @@ use App\Models\Department;
 use App\Models\Organization;
 use App\Models\Staff;
 use App\Models\Customer;
+use App\Models\ServiceOffer;
 use App\Models\Servicetype;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -52,7 +53,7 @@ class AssetController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('servicetype', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('ServiceDesc', 'LIKE', '%' . $searchTerm . '%');
@@ -103,7 +104,7 @@ class AssetController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('servicetype', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('ServiceDesc', 'LIKE', '%' . $searchTerm . '%');
@@ -138,6 +139,7 @@ class AssetController extends Controller
             'customers' => Customer::select('CustomerId', 'firstname', 'lastname')->get(),
             'staffs' => Staff::select('StaffId', 'StaffName')->get(),
             'services' => Servicetype::select('ServiceDesc', 'id')->get(),
+            'numofservices' => ServiceOffer::get(),
         ]);
     }
 
@@ -159,7 +161,8 @@ class AssetController extends Controller
             'AssetPurchaseDate' => ['required', 'string', 'date'],
             'AssetWarrantyExpiryDate' => ['required', 'string', 'date'],
             'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
-            'NumberOfServices' => 'required|integer',
+            'NumberOfServices' => ['required', 'integer'],
+            'ServiceDate.*' => 'required|date',
             'AssetImage' => ['file'],
 
         ]);
@@ -171,9 +174,11 @@ class AssetController extends Controller
         }
 
         try {
-            $asset = new Asset($validatedData);
-            $asset->save();
-
+            foreach ($validatedData['ServiceDate'] as $ServiceDate) {
+                $asset = new Asset($validatedData);
+                $asset->ServiceDate = $ServiceDate;
+                $asset->save();
+            }
             return redirect()->route('assets.index')->with('success', 'Asset is created successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
@@ -202,6 +207,7 @@ class AssetController extends Controller
             'customers' => Customer::select('CustomerId', 'firstname', 'lastname')->get(),
             'staffs' => Staff::select('StaffId', 'StaffName')->get(),
             'services' => Servicetype::select('ServiceDesc', 'id')->get(),
+            'numofservices' => ServiceOffer::get(),
         ]);
     }
 
@@ -223,7 +229,8 @@ class AssetController extends Controller
             'AssetPurchaseDate' => ['required', 'string', 'date'],
             'AssetWarrantyExpiryDate' => ['string', 'date'],
             'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
-            'NumberOfServices' => 'required|integer',
+            'NumberOfServices' => ['required', 'integer'],
+            'ServiceDate.*' => 'required|date',
             'AssetImage' => ['file'],
 
         ]);
@@ -236,8 +243,10 @@ class AssetController extends Controller
 
         try {
             $asset = Asset::where('AssetId', $AssetId)->first();
-            $asset->update($validatedData);
-
+            foreach ($validatedData['ServiceDate'] as $ServiceDate) {
+                $asset->ServiceDate = $ServiceDate;
+                $asset->update($validatedData);
+            }
             return redirect()->route('assets.index')->with('success', 'Asset is Updated Successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
@@ -249,9 +258,13 @@ class AssetController extends Controller
      */
     public function destroy($AssetId): RedirectResponse
     {
-        $asset = Asset::where('AssetId', $AssetId)->first();
-        $asset->delete();
-        return redirect()->route('assets.index')->with('success', 'Asset is Deleted Successfully.');
+        try {
+            $asset = Asset::where('AssetId', $AssetId)->first();
+            $asset->delete();
+            return redirect()->route('assets.index')->with('success', 'Asset is Deleted Successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
 

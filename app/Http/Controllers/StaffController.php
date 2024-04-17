@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Staff;
+use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -60,16 +61,19 @@ class StaffController extends Controller
     {
         $input = $request->validate([
             'StaffName' => 'required|string|max:250',
-            'mobile' => ['required', 'string', 'max:10','min:10'],
+            'mobile' => ['required', 'string', 'max:10', 'min:10'],
             'email' => 'required|string|email|max:250|unique:staffs,email',
             'address' => ['required', 'string', 'max:255'],
             'role' => 'required',
         ]);
-
-        $staff = Staff::create($input);
-        $staff->role = $request->role;
-        return redirect()->route('users.index')
-            ->with('success','New Staff is added successfully.');
+        try {
+            $staff = Staff::create($input);
+            $staff->role = $request->role;
+            return redirect()->route('users.index')
+                ->with('success', 'New Staff is added successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -104,22 +108,19 @@ class StaffController extends Controller
         $staff = Staff::where('StaffId', $StaffId)->first();
         $input = $request->validate([
             'StaffName' => 'required|string|max:250',
-            'mobile' => ['required', 'string', 'max:10','min:10'],
+            'mobile' => ['required', 'string', 'max:10', 'min:10'],
             'email' => 'required|string|email|max:250',
             'address' => ['required', 'string', 'max:255'],
             'role' => 'required',
         ]);
 
-        $staff->update($input);
-
-        $staff->role = $request->role;
-
-        if (empty($request->from)) {
+        try {
+            $staff->update($input);
+            $staff->role = $request->role;
             return redirect()->route('users.index')
-                ->with('success','Staff is updated Successfully.');
-        } else {
-            return redirect()->route('users.edit')
-                ->with('error','Something Went Wrong.')->withInput();
+                ->with('success', 'Staff is updated Successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -132,8 +133,11 @@ class StaffController extends Controller
         if ($staff->StaffId == auth()->user()->id || $staff->roles->id == auth()->user()->id) {
             abort(403, 'Staff DOES NOT HAVE THE RIGHT PERMISSIONS');
         }
-
-        $staff->delete();
-        return redirect()->route('users.index')->with('success','Staff is deleted successfully.');
+        try {
+            $staff->delete();
+            return redirect()->route('users.index')->with('success', 'Staff is deleted successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }

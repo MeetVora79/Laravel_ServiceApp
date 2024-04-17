@@ -164,8 +164,6 @@
                                 </div>
 
                                 <div class="col-md-6">
-
-
                                     <div class="mb-3 row">
                                         <label for="AssetPurchaseDate" class="col-md-4 col-form-label text-md-end text-start"><strong>Purchase Date</strong></label>
                                         <div class="col-md-6">
@@ -207,16 +205,20 @@
                                     <div class="mb-3 row">
                                         <label for="NumberOfServices" class="col-md-4 col-form-label text-md-end text-start"><strong>Number of Services</strong></label>
                                         <div class="col-md-6">
-                                            <select class="form-control" id="NumberOfServices" name="NumberOfServices" required>
-                                                <option value="">Select Number of Services</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
+                                        <select class="form-control @error('NumberOfServices') is-invalid @enderror " aria-label="Number of Services" id="NumberOfServices" name="NumberOfServices" required>
+                                                <option>Select Number of Services</option>
+                                                @forelse ($numofservices as $service)
+                                                <option value="{{  $service->id }}">
+                                                    {{ $service->NumofService }}
+                                                </option>
+                                                @empty
+                                                @endforelse
                                             </select>
+                                            @if ($errors->has('NumberOfServices'))
+                                            <span class="text-danger">{{ $errors->first('NumberOfServices') }}</span>
+                                            @endif
                                         </div>
                                     </div>
-
                                     <div class="row" id="datePickersContainer"></div>
 
                                     <div class="mb-3 row">
@@ -242,121 +244,33 @@
 </section>
 @endsection
 @push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('.select2').select2();
-    });
-</script>
-
-<!--         
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Load saved data from LocalStorage
-        loadFormData();
-
-        // Listen to form submit event
-        document.querySelector('form').addEventListener('submit', function(event) {
-            
-            localStorage.clear();
-        });
-    });
-
-    function loadFormData() {
-        const fields = ['AssetName', 'AssetSerialNum', 'AssetDescription', 'AssetLocation', 'AssetCusId', 'AssetTypeId', 'AssetDepartmentId', 'AssetOrganizationId', 'AssetManagedBy', 'AssetServiceTypeId', 'AssetPurchaseDate', 'AssetWarrantyExpiryDate'];
-
-        fields.forEach(field => {
-            const value = localStorage.getItem(field);
-            if (value) {
-                if (field.includes('Date') || !field.includes('Id')) {
-                    document.getElementById(field).value = value;
-                } else {
-                    $(`#${field}`).val(value).trigger('change');
-                }
-            }
-        });
-    }
-
-    localStorage.removeItem('AssetName');
-    localStorage.removeItem('AssetSerialNum');
-    localStorage.removeItem('AssetDescription');
-    localStorage.removeItem('AssetLocation');
-    localStorage.removeItem('AssetCusId');
-    localStorage.removeItem('AssetTypeId');
-    localStorage.removeItem('AssetDepartmentId');
-    localStorage.removeItem('AssetOrganizationId');
-    localStorage.removeItem('AssetManagedBy');
-    localStorage.removeItem('AssetServiceTypeId');
-    localStorage.removeItem('AssetPurchaseDate');
-    localStorage.removeItem('AssetWarrantyExpiryDate');
-
-</script> -->
-
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const form = document.querySelector('form');
-        const fields = ['AssetName', 'AssetSerialNum', 'AssetDescription', 'AssetLocation',
-            'AssetCusId', 'AssetTypeId', 'AssetDepartmentId', 'AssetOrganizationId',
-            'AssetManagedBy', 'AssetServiceTypeId', 'AssetPurchaseDate', 'AssetWarrantyExpiryDate'
-        ];
-        if (form) {
-            document.querySelectorAll('form input, form select').forEach(element => {
-                const savedValue = sessionStorage.getItem(element.name);
-                if (savedValue) {
-                    element.value = savedValue;
-                }
-                // Save data on change
-                element.addEventListener('input', () => {
-                    sessionStorage.setItem(element.name, element.value);
-                });
-            });
-
-            if ($('.select').length) {
-                $('.select').each(function() {
-                    // Initialize Select
-                    $(this).select();
-
-                    // Restore value from sessionStorage
-                    const savedValue = sessionStorage.getItem(this.name);
-                    if (savedValue !== null) {
-                        $(this).val(savedValue).trigger('change');
-                    }
-
-                    // Save data on change
-                    $(this).on('change', function() {
-                        sessionStorage.setItem(this.name, $(this).val());
-                    });
-                });
-            }
-
-            form.addEventListener('submit', function(event) {
-                fields.forEach(field => sessionStorage.removeItem(field));
-            });
-        } else {
-            console.log("Form not found");
-        }
-    });
-</script> -->
-
-<script>
-    $(document).ready(function() {
-        $('#NumberOfServices').on('change', function() {
-            const numberOfServices = $(this).val();
+        $('#AssetPurchaseDate , #NumberOfServices').on('change', function() {
+            const purchaseDate = $('#AssetPurchaseDate').val();
+            const numberOfServices = $('#NumberOfServices').val();
             const datePickersContainer = $('#datePickersContainer');
-            datePickersContainer.empty(); // Clear the previous date pickers
 
-            for (let i = 0; i < numberOfServices; i++) {
-                const date = new Date();
-                date.setMonth(date.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
-                const formattedDate = date.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+            if (purchaseDate && numberOfServices > 0) {
+                datePickersContainer.empty();
 
-                const datePickerHtml = `
+                let baseDate = new Date(purchaseDate);
+
+                for (let i = 0; i < numberOfServices; i++) {
+                    let newDate = new Date(baseDate)
+                    newDate.setMonth(newDate.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
+                    const formattedDate = newDate.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+
+                    const datePickerHtml = `
                 <label for="ServiceDate${i+1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i+1}</strong></label>
                     <div class="mb-3 col-md-6">
                         <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
                     </div>
                 `;
-                datePickersContainer.append(datePickerHtml);
+                    datePickersContainer.append(datePickerHtml);
+                }
+            } else {
+                datePickersContainer.empty();
             }
         });
     });

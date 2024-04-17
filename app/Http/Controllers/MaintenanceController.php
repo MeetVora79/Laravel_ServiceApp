@@ -47,7 +47,7 @@ class MaintenanceController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('servicetype', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('ServiceDesc', 'LIKE', '%' . $searchTerm . '%');
@@ -93,7 +93,7 @@ class MaintenanceController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
@@ -127,6 +127,7 @@ class MaintenanceController extends Controller
     {
         $validatedData = $request->validate([
             'AssetId' => 'required',
+            'AssignesId' => 'required|integer',
             'NumberOfServices' => 'required|integer',
             'ServiceDate.*' => 'required|date',
             'Instruction' => 'required|string|max:255',
@@ -136,6 +137,7 @@ class MaintenanceController extends Controller
             foreach ($validatedData['ServiceDate'] as $date) {
                 Schedule::create([
                     'AssetId' => $validatedData['AssetId'],
+                    'AssignesId' => 'required|integer',
                     'ServiceDate' => $date,
                     'Instruction' => $validatedData['Instruction'],
                 ]);
@@ -171,7 +173,7 @@ class MaintenanceController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
@@ -225,7 +227,7 @@ class MaintenanceController extends Controller
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                             ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
@@ -283,6 +285,7 @@ class MaintenanceController extends Controller
     {
         $validatedData = $request->validate([
             'AssetId' => 'required',
+            'AssignesId' => 'required|integer',
             'NumberOfServices' => 'required|integer',
             'ServiceDate' => 'required|date',
             'Instruction' => 'required|string|max:255',
@@ -292,6 +295,7 @@ class MaintenanceController extends Controller
             $schedule = Schedule::where('ScheduleId', $ScheduleId)->first();
             $schedule->update([
                 'AssetId' => $validatedData['AssetId'],
+                'AssignesId' => 'required|integer',
                 'ServiceDate' => $validatedData['ServiceDate'],
                 'Instruction' => $validatedData['Instruction'],
             ]);
@@ -307,8 +311,12 @@ class MaintenanceController extends Controller
      */
     public function destroy($ScheduleId): RedirectResponse
     {
-        $schedule = Schedule::where('ScheduleId', $ScheduleId)->first();
-        $schedule->delete();
-        return redirect()->route('maintenance.scheduled')->with('success', 'Schedule of Maintenance is Deleted Successfully.');
+        try {
+            $schedule = Schedule::where('ScheduleId', $ScheduleId)->first();
+            $schedule->delete();
+            return redirect()->route('maintenance.scheduled')->with('success', 'Schedule of Maintenance is Deleted Successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
+        }
     }
 }
