@@ -258,8 +258,8 @@
 
                 for (let i = 0; i < numberOfServices; i++) {
                     let newDate = new Date(baseDate)
-                    newDate.setMonth(newDate.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
-                    const formattedDate = newDate.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
+                    newDate.setMonth(newDate.getMonth() + 3 * (i + 1)); 
+                    const formattedDate = newDate.toISOString().split('T')[0]; 
 
                     const datePickerHtml = `
                 <label for="ServiceDate${i+1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i+1}</strong></label>

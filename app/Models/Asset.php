@@ -35,6 +35,7 @@ class Asset extends Model
         'AssetServiceTypeId',
         'NumberOfServices',
         'AssetImage',
+        'ServiceDateId',
 
     ];
 
@@ -46,6 +47,10 @@ class Asset extends Model
     public function servicetype()
     {
         return $this->belongsTo('App\Models\Servicetype', 'AssetServiceTypeId');
+    }
+    public function servicedate()
+    {
+        return $this->belongsTo('App\Models\Servicedate', 'ServiceDateId');
     }
 
     public function department()

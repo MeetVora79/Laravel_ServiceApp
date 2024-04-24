@@ -44,6 +44,7 @@ class EnduserController extends Controller
 			->distinct()
 			->get(['AssetId'])
 			->pluck('AssetId');
+			
 		$asset = DB::table('schedules')
 			->whereIn('AssetId', $AssetCusId)
 			->join('maintenancestates', 'schedules.MaintenanceStatusId', '=', 'maintenancestates.StatusId')

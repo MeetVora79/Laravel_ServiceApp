@@ -101,7 +101,7 @@
                                 <div class="product-index text-right p-4" style="margin-top:30px; margin-left:30px; border-style:solid">
                                     <div class="form-group">
                                         <label for="startDate" style="font-size:medium;"><strong>From:</strong></label>
-                                        <input type="date" id="startDate" name="startDate" value="{{ now()->startOfYear()->toDateString() }}" required>
+                                        <input type="date" id="startDate" name="startDate" value="{{ now()->startOfYear()->toDateString() }}" required onchange="updateEndDateMin()">
                                         <label class="ml-2" for="endDate" style="font-size:medium;"> <strong>To:</strong></label>
                                         <input type="date" id="endDate" name="endDate" value="{{  now()->toDateString() }}" required>
                                         <div id="chartContainer4" style="height: 350px; width: 550px;">
@@ -133,6 +133,15 @@
 
 @push('scripts')
 @push('scripts')
+
+<script>
+function updateEndDateMin() {
+    var startDateInput = document.getElementById('startDate').value;
+    var endDateInput = document.getElementById('endDate');
+    endDateInput.min = startDateInput; 
+}
+</script>
+
 <script>
     function updateChartData(startDate, endDate) {
         $.ajax({

@@ -1,7 +1,6 @@
 @extends('layouts.back')
 @section('title', 'Edit Asset')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
 @endpush
 @section('content')
 <section class="section">
@@ -219,6 +218,7 @@
                                     </div>
                                     <div class="row" id="datePickersContainer"></div>
 
+
                                     <div class="mb-3 row">
                                         <label for="AssetImage" class="col-md-4 col-form-label text-md-end text-start"><strong>Current Asset Image</strong></label>
                                         <div class="col-md-6 ">
@@ -235,6 +235,8 @@
                                             @endif
                                         </div>
                                     </div>
+                                    <div id="serviceDates" data-service-dates='@json($asset->serviceDate)' style="display:none;"></div>
+
                                 </div>
                             </div>
                             <div class="m-3 row">
@@ -248,40 +250,36 @@
     </div>
 </section>
 @endsection
-@push('scripts')
 
+@push('scripts')
 <script>
     $(document).ready(function() {
+
+        const serviceDatesElement = $('#serviceDates');
+        const serviceDatesData = serviceDatesElement.data('service-dates'); 
+
         function initializeDatePickers() {
-            const purchaseDate = $('#AssetPurchaseDate').val();
             const numberOfServices = $('#NumberOfServices').val();
             const datePickersContainer = $('#datePickersContainer');
 
-            if (purchaseDate && numberOfServices) {
-                datePickersContainer.empty();
+            datePickersContainer.empty();
 
-                let baseDate = new Date(purchaseDate);
+            for (let i = 0; i < numberOfServices; i++) {
+                let serviceDateKey = `ServiceDate${i + 1}`;
+                let serviceDateValue = serviceDatesData[serviceDateKey] || '';
 
-                for (let i = 0; i < numberOfServices; i++) {
-                    let newDate = new Date(baseDate)
-                    newDate.setMonth(newDate.getMonth() + 3 * (i + 1)); // Calculate the date 3 months apart
-                    const formattedDate = newDate.toISOString().split('T')[0]; // Format the date to YYYY-MM-DD
-
-                    const datePickerHtml = `
-                <label for="ServiceDate${i+1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i+1}</strong></label>
-                    <div class="mb-3 col-md-6">
-                        <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
-                    </div>
+                const datePickerHtml = `
+                        <label for="ServiceDate${i + 1}" class="col-md-4 col-form-label text-md-end text-start"><strong>Service Date ${i + 1}</strong></label>
+                        <div class="mb-3 col-md-6">
+                            <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i + 1}" value="${serviceDateValue}" required>
+                        </div>
                 `;
-                    datePickersContainer.append(datePickerHtml);
-                }
-            } else {
-                datePickersContainer.empty();
+                datePickersContainer.append(datePickerHtml);
             }
-        }
-        $('#AssetPurchaseDate, #NumberOfServices').on('change', initializeDatePickers);
+        };
+
+        $('#NumberOfServices').on('change', initializeDatePickers);
         initializeDatePickers();
     });
 </script>
-
 @endpush

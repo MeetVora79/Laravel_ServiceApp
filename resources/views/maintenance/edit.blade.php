@@ -1,8 +1,5 @@
 @extends('layouts.back')
 @section('title', 'Edit Schedule')
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
-@endpush
 @section('content')
 <section class="section">
 	<div class="section-header">
@@ -50,8 +47,8 @@
 									@empty
 									@endforelse
 								</select>
-								@if ($errors->has('AssetTypeId'))
-								<span class="text-danger">{{ $errors->first('AssetTypeId') }}</span>
+								@if ($errors->has('AssignedId'))
+								<span class="text-danger">{{ $errors->first('AssignedId') }}</span>
 								@endif
 							</div>
 
@@ -82,8 +79,3 @@
 
 </section>
 @endsection
-@push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-
-
-@endpush

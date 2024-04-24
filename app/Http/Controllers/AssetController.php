@@ -13,6 +13,8 @@ use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\ServiceOffer;
 use App\Models\Servicetype;
+use App\Models\Servicedate;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
@@ -48,7 +50,7 @@ class AssetController extends Controller
                 $query->orWhereHas('organization', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('OrganizationName', 'LIKE', '%' . $searchTerm . '%');
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
@@ -99,7 +101,7 @@ class AssetController extends Controller
                 $query->orWhereHas('organization', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('OrganizationName', 'LIKE', '%' . $searchTerm . '%');
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
@@ -162,10 +164,13 @@ class AssetController extends Controller
             'AssetWarrantyExpiryDate' => ['required', 'string', 'date'],
             'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
             'NumberOfServices' => ['required', 'integer'],
-            'ServiceDate.*' => 'required|date',
             'AssetImage' => ['file'],
 
         ]);
+
+        // $request->validate([
+        //     'ServiceDate.*' => 'required|date',
+        // ]);
 
         if ($request->hasFile('AssetImage')) {
             $originalFileName = $request->AssetImage->getClientOriginalName();
@@ -174,11 +179,16 @@ class AssetController extends Controller
         }
 
         try {
-            foreach ($validatedData['ServiceDate'] as $ServiceDate) {
-                $asset = new Asset($validatedData);
-                $asset->ServiceDate = $ServiceDate;
-                $asset->save();
+            $serviceDates = $request->ServiceDate;
+            $serviceDate = new Servicedate();
+            foreach ($serviceDates as $index => $date) {
+                $dateColumn = 'ServiceDate' . ($index + 1);
+                $serviceDate->$dateColumn = $date;
             }
+            $serviceDate->save();
+            $validatedData['ServiceDateId'] = $serviceDate->ServiceDateId;           
+            Asset::create($validatedData);
+
             return redirect()->route('assets.index')->with('success', 'Asset is created successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
@@ -197,10 +207,14 @@ class AssetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($AssetId): View
+    public function edit(Request $request ,$AssetId): View
     {
         $asset = Asset::where('AssetId', $AssetId)->first();
-        return view('assets.edit', compact('asset'), [
+        $getDateId = Asset::where('AssetId', $AssetId)->value('ServiceDateId');
+        $serviceDate = Servicedate::where('ServiceDateId',$getDateId)->first();
+        // $dd = $asset->serviceDate->toJson();
+        // dd($serviceDate);
+        return view('assets.edit', compact('asset','serviceDate'), [
             'assettypes' => Assettype::select('AssetTypeId', 'AssetTypeName')->get(),
             'assetdepartments' => Department::select('DepartmentId', 'DepartmentName')->get(),
             'assetorganizations' => Organization::select('OrganizationId', 'OrganizationName')->get(),
@@ -230,9 +244,12 @@ class AssetController extends Controller
             'AssetWarrantyExpiryDate' => ['string', 'date'],
             'AssetServiceTypeId' => ['required', 'integer', 'exists:servicetypes,id'],
             'NumberOfServices' => ['required', 'integer'],
-            'ServiceDate.*' => 'required|date',
             'AssetImage' => ['file'],
 
+        ]);
+
+        $request->validate([
+            'ServiceDate.*' => 'required|date',
         ]);
 
         if ($request->hasFile('AssetImage')) {
@@ -243,10 +260,21 @@ class AssetController extends Controller
 
         try {
             $asset = Asset::where('AssetId', $AssetId)->first();
-            foreach ($validatedData['ServiceDate'] as $ServiceDate) {
-                $asset->ServiceDate = $ServiceDate;
-                $asset->update($validatedData);
+            $asset->update($validatedData);
+
+            $getDate = Asset::where('AssetId', $AssetId)->value('ServiceDateId');
+            $serviceDate = Servicedate::where('ServiceDateId',$getDate)->first();
+            $serviceDates = $request->ServiceDate;
+            for ($i = 0; $i < count($serviceDates); $i++) {
+                $dateColumn = 'ServiceDate' . ($i + 1);
+                if (isset($serviceDates[$i])) {
+                    $serviceDate->$dateColumn = $serviceDates[$i];
+                } else {
+                    $serviceDate->$dateColumn = null;
+                }
             }
+            $serviceDate->save();
+
             return redirect()->route('assets.index')->with('success', 'Asset is Updated Successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
@@ -267,24 +295,4 @@ class AssetController extends Controller
         }
     }
 
-
-    /**
-     * Functios for AssetType
-     */
-
-    public function assetType(): View
-    {
-        return view('assets.assettype');
-    }
-
-    public function storeAssetType(Request $request): RedirectResponse
-    {
-        $input = $request->validate([
-            'AssetTypeName' => "required|string|max:255"
-        ]);
-        Assettype::create($input);
-
-        return redirect()->route('assets.create')
-            ->with('success', 'New Asset Type is Added Successfully.');
-    }
 }

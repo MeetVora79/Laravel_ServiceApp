@@ -1,8 +1,5 @@
 @extends('layouts.back')
 @section('title', 'Add New Role')
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
-@endpush
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -39,7 +36,7 @@
                             <div class="mb-3 row">
                                 <label for="permissions" class="col-md-4 col-form-label text-md-end text-start">Permissions</label>
                                 <div class="col-md-6">
-                                    <select class="form-control @error('permissions') is-invalid @enderror select2" multiple aria-label="Permissions" id="permissions" name="permissions[]" style="height: 210px;" required>
+                                    <select class="form-control @error('permissions') is-invalid @enderror" multiple aria-label="Permissions" id="permissions" name="permissions[]" style="height: 210px;" required>
                                         @forelse ($permissions as $permission)
                                             <option value="{{ $permission->id }}">
                                                 {{ $permission->name }}
@@ -65,12 +62,4 @@
     </div>
 </section>
 @endsection
-@push('scripts')
-    <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2();
-        });
-    </script>
 
-@endpush

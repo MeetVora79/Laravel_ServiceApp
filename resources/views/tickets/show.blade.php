@@ -20,7 +20,6 @@
                         </div>
                     </div>
                     <div class="card-body">
-
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3 row">
@@ -94,10 +93,8 @@
                                         <img style="width:80px; height:80px" src="{{asset('uploads/'.$ticket->Attachments)}}" alt="No Image Found!!">
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

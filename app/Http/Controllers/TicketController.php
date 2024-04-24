@@ -11,7 +11,7 @@ use App\Models\Allocation;
 use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\RedirectResponse;   
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -23,14 +23,10 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('permission:create-ticket|edit-ticket|delete-ticket|assign-ticket', ['only' => ['index', 'show', 'assign', 'onfield']]);
-        // $this->middleware('permission:create-ticket', ['only' => ['create','store']]);
-        // $this->middleware('permission:edit-ticket', ['only' => ['edit','update']]);
-        // $this->middleware('permission:delete-ticket', ['only' => ['destroy']]);
     }
 
     /**

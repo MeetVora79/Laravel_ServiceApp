@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\Schedule;
+use App\Models\Servicedate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -42,7 +43,7 @@ class MaintenanceController extends Controller
                 $query->orWhereHas('organization', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('OrganizationName', 'LIKE', '%' . $searchTerm . '%');
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
@@ -81,19 +82,19 @@ class MaintenanceController extends Controller
                 foreach ($columns as $index => $column) {
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
-                }
-                $query->orWhereHas('maintenancestates', function ($subQuery) use ($searchTerm) {
+                }   
+                $query->orWhereHas('maintenancestatus', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
+                    $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
+                        $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                    });
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
-                });
-                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
@@ -114,9 +115,12 @@ class MaintenanceController extends Controller
      */
     public function create($AssetId): View
     {
+        $getDateId = Asset::where('AssetId', $AssetId)->value('ServiceDateId');
+        $serviceDates = Servicedate::where('ServiceDateId', $getDateId)->first();
         $asset = Asset::Where('AssetId', $AssetId)->first();
-        return view('maintenance.create', compact('asset'), [
+        return view('maintenance.create', compact('asset', 'serviceDates'), [
             'staffs' => DB::table("staffs")->where("role", '3')->get(),
+
         ]);
     }
 
@@ -126,22 +130,14 @@ class MaintenanceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'AssetId' => 'required',
-            'AssignesId' => 'required|integer',
-            'NumberOfServices' => 'required|integer',
-            'ServiceDate.*' => 'required|date',
+            'AssetId' => 'required|exists:assets,AssetId',
+            'AssignedId' => 'required|exists:staffs,StaffId',
+            'ServiceDate' => 'required|date',
             'Instruction' => 'required|string|max:255',
         ]);
 
         try {
-            foreach ($validatedData['ServiceDate'] as $date) {
-                Schedule::create([
-                    'AssetId' => $validatedData['AssetId'],
-                    'AssignesId' => 'required|integer',
-                    'ServiceDate' => $date,
-                    'Instruction' => $validatedData['Instruction'],
-                ]);
-            }
+            Schedule::create($validatedData);
             return redirect()->route('maintenance.scheduled')->with('success', 'Maintenance for your asset is scheduled successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
@@ -162,18 +158,18 @@ class MaintenanceController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
-                $query->orWhereHas('maintenancestates', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('maintenancestatus', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
+                    $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
+                        $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                    });
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
-                });
-                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
@@ -216,26 +212,24 @@ class MaintenanceController extends Controller
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
                 }
-                $query->orWhereHas('maintenancestates', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('maintenancestatus', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
                 });
                 $query->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
+                    $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
+                        $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
+                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                    });
                 });
-                $query->orWhereHas('Staff', function ($subQuery) use ($searchTerm) {
+                $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StaffName', 'LIKE', '%' . $searchTerm . '%');
-                });
-                $query->orWhereHas('customer', function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                        ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                 });
             });
         }
 
         $scheduleQuery->orderBy($sort, $direction);
-        $scheduleQuery = Schedule::whereHas('asset', function ($query) use ($TicketStaffId) {
-            $query->where('AssetManagedBy', $TicketStaffId);
-        })->paginate(10);
+        $scheduleQuery = Schedule::where('AssignedId',$TicketStaffId)->paginate(10);
         $schedules =  $scheduleQuery;
 
         $nextDirection = $direction == 'asc' ? 'desc' : 'asc';
@@ -284,21 +278,15 @@ class MaintenanceController extends Controller
     public function update(Request $request, $ScheduleId): RedirectResponse
     {
         $validatedData = $request->validate([
-            'AssetId' => 'required',
-            'AssignesId' => 'required|integer',
-            'NumberOfServices' => 'required|integer',
+            'AssetId' => 'required|exists:assets,AssetId',
+            'AssignedId' => 'required|exists:staffs,StaffId',
             'ServiceDate' => 'required|date',
             'Instruction' => 'required|string|max:255',
         ]);
 
         try {
             $schedule = Schedule::where('ScheduleId', $ScheduleId)->first();
-            $schedule->update([
-                'AssetId' => $validatedData['AssetId'],
-                'AssignesId' => 'required|integer',
-                'ServiceDate' => $validatedData['ServiceDate'],
-                'Instruction' => $validatedData['Instruction'],
-            ]);
+            $schedule->update($validatedData);
 
             return redirect()->route('maintenance.scheduled')->with('success', 'Your scheduled Maintenance is updated successfully');
         } catch (\Exception $e) {

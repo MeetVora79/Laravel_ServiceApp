@@ -25,6 +25,7 @@ class Schedule extends Model
 
 	protected $fillable = [
 		'AssetId',
+		'AssignedId',
 		'ServiceDate',
 		'Instruction',
 	];
@@ -32,11 +33,6 @@ class Schedule extends Model
 	public function staff()
 	{
 		return $this->belongsTo('App\Models\Staff', 'AssignedId');
-	}
-
-	public function customer()
-	{
-		return $this->belongsTo('App\Models\Customer', 'AssignedId');
 	}
 	
 	public function asset()

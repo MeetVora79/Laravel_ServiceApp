@@ -42,13 +42,6 @@
         </div>
         <div class="dropdown-list-content dropdown-list-icons">
           <a href="#" class="dropdown-item dropdown-item-unread">
-            <!-- <div class="dropdown-item-icon bg-primary text-white">
-                <i class="fas fa-code"></i>
-              </div>
-              <div class="dropdown-item-desc">
-                Template update is available now!
-                <div class="time text-primary">2 Min Ago</div>
-              </div> -->
           </a>
         </div>
         <div class="dropdown-footer text-center">
@@ -69,7 +62,7 @@
                  document.getElementById('logout-form').submit();">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
-        <form id="logout-form" action="/logout" method="GET" class="d-none">
+        <form id="logout-form" action="{{ route('logout') }}" method="GET" class="d-none">
           @csrf
         </form>
       </div>

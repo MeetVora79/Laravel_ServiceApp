@@ -54,7 +54,7 @@
                                 <div class="mb-3 row">
                                     <label for="AssetManagedBy" class="col-md-4 col-form-label text-md-end text-start"><strong>Maintenance Engineer</strong></label>
                                     <div class="col-md-6" style="line-height: 35px;">
-                                        {{ $schedule->asset->staff->StaffName }}
+                                        {{ $schedule->staff->StaffName }}
                                     </div>
                                 </div>
 

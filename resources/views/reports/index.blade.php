@@ -81,7 +81,7 @@
 							<div class="col-md-5 p-3">
 								<div class="mb-3">
 									<label for="sDate" class="form-label"><strong>Start Date</strong></label>
-									<input type="date" class="form-control" id="sDate" name="sDate" required>
+									<input type="date" class="form-control" id="sDate" name="sDate" required onchange="updateEndDateMinimum()">
 								</div>
 								<div class="mb-3">
 									<label for="eDate" class="form-label"><strong>End Date</strong></label>
@@ -105,7 +105,7 @@
 								<div class="product-index text-right" style="margin-top:30px; margin-left:30px; border-style:solid">
 									<div class="form-group">
 										<label for="startDate" style="font-size:medium;"><strong>From:</strong></label>
-										<input type="date" id="startDate" name="startDate" value="{{ now()->startOfYear()->toDateString() }}" required>
+										<input type="date" id="startDate" name="startDate" value="{{ now()->startOfYear()->toDateString() }}" required onchange="updateEndDateMin()">
 										<label class="ml-2" for="endDate" style="font-size:medium;"> <strong>To:</strong></label>
 										<input type="date" id="endDate" name="endDate" value="{{  now()->toDateString() }}" required>
 										<div id="chartContainer4" style="height: 350px; width: 550px;">
@@ -138,6 +138,23 @@
 
 @push('scripts')
 @push('scripts')
+
+<script>
+function updateEndDateMinimum() {
+    var startDate = document.getElementById('sDate').value;
+    var endDateInput = document.getElementById('eDate');
+    endDateInput.min = startDate;
+}
+</script>
+
+<script>
+function updateEndDateMin() {
+    var startDateInput = document.getElementById('startDate').value;
+    var endDateInput = document.getElementById('endDate');
+    endDateInput.min = startDateInput; 
+}
+</script>
+
 <script>
 	function updateChartData(startDate, endDate) {
 		$.ajax({

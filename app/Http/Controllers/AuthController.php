@@ -35,10 +35,17 @@ class AuthController extends Controller
 		try {
 			$customerExists = Customer::where('email', $validatedData['email'])->exists();
 			$staffExists = Staff::where('email', $validatedData['email'])->exists();
+			$staff = Staff::where('email', $validatedData['email'])->first();
+			$role = $staff ? $staff->role : 4; 
 			if (!$customerExists && !$staffExists) {
 				return back()->with('info', 'Only existing customers or staffs can register.')->withInput();
-			} 
-			User::create($validatedData);
+			}
+			User::create([
+				'name' => $request->name,
+				'email' => $request->email,
+				'password' => $request->password,
+				'role' => $role,
+			]);
 			return redirect('/')->with('success', 'Your Registration has been successful.');
 		} catch (QueryException $e) {
 			return back()->with(['info', 'Registration failed due to a technical issue. Please try again.']);

@@ -50,8 +50,7 @@ class EngineerController extends Controller
 			->toArray();
 
 		$asset = DB::table('schedules')
-			->join('assets', 'schedules.AssetId', '=', 'assets.AssetId')
-			->where('assets.AssetManagedBy', $TicketStaffId)
+			->where('AssignedId', $TicketStaffId)
 			->join('maintenancestates', 'schedules.MaintenanceStatusId', '=', 'maintenancestates.StatusId')
 			->select('maintenancestates.StatusName as label', DB::raw('count(DISTINCT schedules.AssetId) as y'))
 			->groupBy('maintenancestates.StatusName')

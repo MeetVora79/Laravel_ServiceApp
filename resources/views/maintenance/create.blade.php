@@ -1,8 +1,5 @@
 @extends('layouts.back')
 @section('title', 'Create Schedule')
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
-@endpush
 @section('content')
 <section class="section">
 	<div class="section-header">
@@ -41,7 +38,6 @@
 							<div class="form-group">
 								<label for="AssignedId"><strong>Assigned Engineer</strong></label>
 								<select class="form-control @error('AssignedId') is-invalid @enderror" aria-label="Asset Type" id="AssignedId" name="AssignedId" required>
-									<option>Select Type</option>
 									@forelse ($staffs as $staff)
 									<option value="{{  $staff->StaffId }}" {{ (isset($asset) && $asset->AssetManagedBy == $staff->StaffId) ? 'selected' : '' }}>
 										{{ $staff->StaffName }}
@@ -49,8 +45,8 @@
 									@empty
 									@endforelse
 								</select>
-								@if ($errors->has('AssetTypeId'))
-								<span class="text-danger">{{ $errors->first('AssetTypeId') }}</span>
+								@if ($errors->has('AssignedId'))
+								<span class="text-danger">{{ $errors->first('AssignedId') }}</span>
 								@endif
 							</div>
 
@@ -58,8 +54,37 @@
 								<label for="NumberOfServices"><strong>Number of Services</strong></label>
 								<input type="text" class="form-control" name="NumberOfServices" id="NumberOfServices" aria-describedby="NumberOfServices" value="{{$asset->NumberOfServices}}" required readonly>
 							</div>
-							<div id="datePickersContainer"></div>
 
+							<div class="form-group">
+								<label for="ServiceDate"><strong>Service Date</strong></label>
+								<select class="form-control @error('ServiceDate') is-invalid @enderror" aria-label="Service Date" id="ServiceDate" name="ServiceDate" required>
+									<option value="">Select Date</option>
+									@if($serviceDates->ServiceDate1)
+									<option value="{{ $serviceDates->ServiceDate1 }}">
+										{{ $serviceDates->ServiceDate1 }}
+									</option>
+									@endif
+									@if($serviceDates->ServiceDate2)
+									<option value="{{ $serviceDates->ServiceDate2 }}">
+										{{ $serviceDates->ServiceDate2 }}
+									</option>
+									@endif
+									@if($serviceDates->ServiceDate3)
+									<option value="{{ $serviceDates->ServiceDate3 }}">
+										{{ $serviceDates->ServiceDate3 }}
+									</option>
+									@endif
+									@if($serviceDates->ServiceDate4)
+									<option value="{{ $serviceDates->ServiceDate4 }}">
+										{{ $serviceDates->ServiceDate4 }}
+									</option>
+									@endif
+								</select>
+
+								@error('ServiceDate')
+								<span class="text-danger">{{ $message }}</span>
+								@enderror
+							</div>
 							<div class="form-group">
 								<label for="Instruction"><strong>Instruction</strong></label>
 								<input type="text" class="form-control" name="Instruction" id="Instruction" aria-describedby="ticketInstruction" placeholder="Give Your instruction here!!" value="{{old('Instruction')}}" required>
@@ -76,28 +101,3 @@
 
 </section>
 @endsection
-@push('scripts')
-
-<script>
-	$(document).ready(function() {
-		const numberOfServices = $('#NumberOfServices').val();
-		const datePickersContainer = $('#datePickersContainer');
-		datePickersContainer.empty();
-
-		for (let i = 0; i < numberOfServices; i++) {
-			const date = new Date();
-			date.setMonth(date.getMonth() + 3 * (i + 1));
-			const formattedDate = date.toISOString().split('T')[0];
-
-			const datePickerHtml = `
-            <div class="form-group">
-                <label for="ServiceDate${i+1}"><strong>Service Date ${i+1}</strong></label>
-                <input type="date" class="form-control" name="ServiceDate[]" id="ServiceDate${i+1}" value="${formattedDate}" required>
-            </div>
-        `;
-			datePickersContainer.append(datePickerHtml);
-		}
-	});
-</script>
-
-@endpush

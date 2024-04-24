@@ -1,7 +1,6 @@
 @extends('layouts.back')
 @section('title', 'Manage Schedule')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
 <style>
 	.dropdown-menu li {
 		position: relative;
@@ -71,7 +70,7 @@
 					<div class="card-header justify-content-between">
 						<h4>Scheduled Maintenance</h4>
 						<div class="search-box form-inline search-element">
-							<form action="{{ route('myschedule') }}" method="GET">
+							<form action="{{ route('maintenance.scheduled') }}" method="GET">
 								<input class="form-control" type="text" name="searchTerm" id="searchTerm" placeholder="Search..." value="{{ request('searchTerm', '') }}" aria-label="Search" data-width="250" required> <span class="clear-btn" onclick="clearAndRedirect()" style="display: none;">×</span>
 								<button class="btn form-control" type="submit"><i class="fas fa-search"></i></button>
 							</form>
@@ -99,7 +98,7 @@
 									<td>{{ $schedule->ScheduleId  }}</td>
 									<td>{{ $schedule->AssetId  }}</td>
 									<td>{{ $schedule->asset->customer->firstname }} {{ $schedule->asset->customer->lastname }}</td>
-									<td>{{ $schedule->asset->staff->StaffName }}</td>
+									<td>{{ $schedule->staff->StaffName }}</td>
 									<td>{{ $schedule->maintenancestatus->StatusName }}</td>
 									<td>{{ $schedule->ServiceDate }}</td>
 									<td>{{ $schedule->Instruction }}</td>
@@ -172,7 +171,7 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
+
 <script>
 	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 	var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -199,7 +198,7 @@
 			searchTermInput.value = '';
 			toggleCancelButton();
 			searchTermInput.focus();
-			window.location.href = 'http://127.0.0.1:8000/maintenance';
+			window.location.href = 'http://127.0.0.1:8000/maintenance/scheduled/list';
 		}
 
 		// Event listeners

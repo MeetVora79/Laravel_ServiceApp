@@ -100,7 +100,7 @@ Route::group([], function () {
     Route::get('/tickets/create', [App\Http\Controllers\TicketController::class, 'create'])->name('tickets.create');
     Route::get('/tickets/myticket/create', [App\Http\Controllers\TicketController::class, 'mycreate'])->name('tickets.mycreate');
     Route::get('/tickets/edit/{TicketId}', [App\Http\Controllers\TicketController::class, 'myedit'])->name('tickets.myedit');
-    Route::get('/tickets/{TicketId}', [App\Http\Controllers\TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/tickets/{TicketId}', [App\Http\Controllers\TicketController::class, 'show'])->name('tickets.view');
     Route::get('/mytickets/{TicketId}', [App\Http\Controllers\TicketController::class, 'myshow'])->name('myshow');
     Route::post('/new/myticket/store', [App\Http\Controllers\TicketController::class, 'mystore'])->name('mystore');
     Route::put('/new/myticket/update/{TicketId}', [App\Http\Controllers\TicketController::class, 'myupdate'])->name('myupdate');
@@ -114,8 +114,8 @@ Route::group([], function () {
     Route::get('/tickets/myallocation/list', [App\Http\Controllers\TicketController::class, 'myAllocation'])->name('myallocation');
     Route::get('/tickets/onfield/{AllocationId}', [App\Http\Controllers\FieldinfoController::class, 'showAllocation'])->name('tickets.onfield');
     Route::delete('/Allocation/delete', [App\Http\Controllers\TicketController::class, 'delete'])->name('tickets.allocationDelete');
-    Route::get('/tickets/{ticket}/status/{status}', [App\Http\Controllers\TicketController::class, 'updateStatus'])->name('update.status');
-    Route::get('/{ticket}/{status}', [App\Http\Controllers\FieldinfoController::class, 'statusUpdate'])->name('changeStatus');
+    Route::get('/update/{ticket}/status/{status}', [App\Http\Controllers\TicketController::class, 'updateStatus'])->name('update.status');
+    Route::get('/change/{ticket}/{status}', [App\Http\Controllers\FieldinfoController::class, 'statusUpdate'])->name('changeStatus');
 });
 
 
@@ -129,11 +129,14 @@ Route::group(['prefix' => 'assets'], function () {
     Route::get('/edit/{AssetId}', [App\Http\Controllers\AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/update/{AssetId}', [App\Http\Controllers\AssetController::class, 'update'])->name('assets.update');
     Route::delete('/destroy/{AssetId}', [App\Http\Controllers\AssetController::class, 'destroy'])->name('assets.destroy');
+});
 
     // Routes for AssetType
-    Route::get('/new/type', [App\Http\Controllers\AssetController::class, 'assetType'])->name('assettype.create');
-    Route::post('/type/store', [App\Http\Controllers\AssetController::class, 'storeAssetType'])->name('storeAssetType');
-});
+    Route::get('/new/type', [App\Http\Controllers\AssettypeController::class, 'create'])->name('assettype.create');
+    Route::post('/type/store', [App\Http\Controllers\AssettypeController::class, 'store'])->name('storeAssetType');
+    Route::get('/type/edit/{AssetTypeId}', [App\Http\Controllers\AssettypeController::class, 'edit'])->name('editAssetType');
+    Route::put('/type/update/{AssetTypeId}', [App\Http\Controllers\AssettypeController::class, 'update'])->name('updateAssetType');
+    Route::delete('/type/delete/{AssetTypeId}', [App\Http\Controllers\AssettypeController::class, 'destroy'])->name('deleteAssetType');
 
 
 // Routes for Maintenance

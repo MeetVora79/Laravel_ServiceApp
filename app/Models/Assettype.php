@@ -26,7 +26,6 @@ class Assettype extends Model
 
     public function assets()
     {
-        // Define a one-to-many relationship
         return $this->hasMany(Asset::class, 'AssetTypeId', 'AssetTypeId');
     }
 }

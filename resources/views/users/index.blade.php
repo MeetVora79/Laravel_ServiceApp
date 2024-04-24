@@ -31,75 +31,75 @@
       <div class="breadcrumb-item">Staff</div>
     </div>
   </div>
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header justify-content-between">
-            <h4>All Staff</h4>
-            <div class="search-box form-inline search-element">
-              <form action="{{ route('users.index') }}" method="GET">
-                <input class="form-control" type="text" name="searchTerm" id="searchTerm" placeholder="Search..." value="{{ request('searchTerm', '') }}" aria-label="Search" data-width="250" required> <span class="clear-btn" onclick="clearAndRedirect()" style="display: none;">×</span>
-                <button class="btn form-control" type="submit"><i class="fas fa-search"></i></button>
-              </form>
-            </div>
-            <div class="card-header-form">
-              <a href="{{ route('users.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i> Add New Staff</a>
-            </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header justify-content-between">
+          <h4>All Staff</h4>
+          <div class="search-box form-inline search-element">
+            <form action="{{ route('users.index') }}" method="GET">
+              <input class="form-control" type="text" name="searchTerm" id="searchTerm" placeholder="Search..." value="{{ request('searchTerm', '') }}" aria-label="Search" data-width="250" required> <span class="clear-btn" onclick="clearAndRedirect()" style="display: none;">×</span>
+              <button class="btn form-control" type="submit"><i class="fas fa-search"></i></button>
+            </form>
           </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <tr>
-                  <th scope="col">S#<a href="{{ route('users.index', ['sort' => 'StaffId', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
-                  <th scope="col">Name<a href="{{ route('users.index', ['sort' => 'name', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
-                  <th scope="col">Mobile No.<a href="{{ route('users.index', ['sort' => 'mobile', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
-                  <th scope="col">Email<a href="{{ route('users.index', ['sort' => 'email', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
-                  <th scope="col">Address</th>
-                  <th scope="col">Roles<a href="{{ route('users.index', ['sort' => 'role', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
-                  <th scope="col">Action</th>
-                </tr>
-                @forelse ($staffs as $staff)
-                <tr>
-                  <td>{{ $staff->StaffId }}</td>
-                  <td>{{ $staff->StaffName }}</td>
-                  <td>{{ $staff->mobile }}</td>   
-                  <td>{{ $staff->email }}</td>   
-                  <td>{{ $staff->address }}</td>   
-                  <td><span class="badge bg-primary">{{ $staff->roles->name }}</span></td>
-                  <td>
-                    <form action="{{ route('users.destroy', $staff->StaffId) }}" method="post">
-                      @csrf
-                      @method('DELETE')
+          <div class="card-header-form">
+            <a href="{{ route('users.create') }}" class="btn btn-success btn-sm my-2"><i class="bi bi-plus-circle"></i> Add New Staff</a>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <tr>
+                <th scope="col">S#<a href="{{ route('users.index', ['sort' => 'StaffId', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                <th scope="col">Name<a href="{{ route('users.index', ['sort' => 'name', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                <th scope="col">Mobile No.<a href="{{ route('users.index', ['sort' => 'mobile', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                <th scope="col">Email<a href="{{ route('users.index', ['sort' => 'email', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                <th scope="col">Address</th>
+                <th scope="col">Roles<a href="{{ route('users.index', ['sort' => 'role', 'direction' => $nextDirection]) }}"><i class="fa fa-sort"></i></a></th>
+                <th scope="col">Action</th>
+              </tr>
+              @forelse ($staffs as $staff)
+              <tr>
+                <td>{{ $staff->StaffId }}</td>
+                <td>{{ $staff->StaffName }}</td>
+                <td>{{ $staff->mobile }}</td>
+                <td>{{ $staff->email }}</td>
+                <td>{{ $staff->address }}</td>
+                <td><span class="badge bg-primary">{{ $staff->roles->name }}</span></td>
+                <td>
+                  <form action="{{ route('users.destroy', $staff->StaffId) }}" method="post">
+                    @csrf
+                    @method('DELETE')
 
-                      <a href="{{ route('users.show', $staff->StaffId) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Show"><i class="bi bi-eye"></i></a>
-                    
-                      <a href="{{ route('users.edit', $staff->StaffId) }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                    <a href="{{ route('users.show', $staff->StaffId) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Show"><i class="bi bi-eye"></i></a>
 
-                      @if(auth()->user()->role == 1 && auth()->user()->role !== $staff->role)
-                      <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" onclick="return confirm('Do you want to delete this user?');"><i class="bi bi-trash"></i> </button>
-                      @endif
+                    <a href="{{ route('users.edit', $staff->StaffId) }}" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="bi bi-pencil-square"></i></a>
 
-                    </form>
-                  </td>
-                </tr>
-                @empty
-                <td colspan="5">
-                  <span class="text-danger">
-                    <strong>No Staff Found!</strong>
-                  </span>
+                    @if(auth()->user()->role == 1 && auth()->user()->role !== $staff->role)
+                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" onclick="return confirm('Do you want to delete this user?');"><i class="bi bi-trash"></i> </button>
+                    @endif
+
+                  </form>
                 </td>
-                @endforelse
-              </table>
-              {{ $staffs->links() }}
-            </div>
+              </tr>
+              @empty
+              <td colspan="5">
+                <span class="text-danger">
+                  <strong>No Staff Found!</strong>
+                </span>
+              </td>
+              @endforelse
+            </table>
+            {{ $staffs->links() }}
           </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </section>
-
 @endsection
+
 @push('scripts')
 <script>
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -115,19 +115,19 @@
 
     // Show the cancel button when the input field is focused or has text.
     function toggleCancelButton() {
-        if (searchTermInput.value.length > 0 || searchTermInput === document.activeElement) {
-            cancelButton.style.display = 'inline';
-        } else {
-            cancelButton.style.display = 'none';
-        }
+      if (searchTermInput.value.length > 0 || searchTermInput === document.activeElement) {
+        cancelButton.style.display = 'inline';
+      } else {
+        cancelButton.style.display = 'none';
+      }
     }
 
     // Clear the input and redirect, or just hide the button on clear
     function clearAndRedirect() {
-        searchTermInput.value = ''; 
-        toggleCancelButton(); 
-        searchTermInput.focus();
-        window.location.href = 'http://127.0.0.1:8000/staff';
+      searchTermInput.value = '';
+      toggleCancelButton();
+      searchTermInput.focus();
+      window.location.href = 'http://127.0.0.1:8000/staff';
     }
 
     // Event listeners
@@ -137,8 +137,7 @@
 
     toggleCancelButton();
     cancelButton.onclick = clearAndRedirect;
-});
-
+  });
 </script>
 
 @endpush

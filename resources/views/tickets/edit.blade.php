@@ -1,8 +1,5 @@
 @extends('layouts.back')
 @section('title', 'Edit Ticket')
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
-@endpush
 @section('content')
 <section class="section">
     <div class="section-header">
@@ -27,11 +24,6 @@
                             @csrf
                             @method("PUT")
 
-                            <!-- <div class="mb-2">
-                            <input type="checkbox" id="toggleCheckbox" name="toggle" value="1">                              
-                            <label for="newcustomer" class="p-2">New Customer</label>
-                           </div> -->
-
                            <div class="mb-3 row" id="uncheckedContent" >
                                 <label for="TicketCreaterId" class="col-md-2 col-form-label text-md-end text-start"><strong>Creater Name</strong></label>
                                 <div class="col-md-4">
@@ -50,16 +42,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="mb-3 row" id="checkedContent">
-                                <label for="TicketCreaterId" class="col-md-2 col-form-label text-md-end text-start">Creater Name</label>
-                                <div class="col-md-4">
-                                  <input type="text" class="form-control @error('TicketCreaterId ') is-invalid @enderror" id="TicketCreaterId " name="TicketCreaterId" value="{{ old('TicketCreaterId ') }}">
-                                    @if ($errors->has('TicketCreaterId '))
-                                        <span class="text-danger">{{ $errors->first('TicketCreaterId ') }}</span>
-                                    @endif
-                                </div>
-                            </div> -->
-
                             <div class="mb-3 row">
                                 <label for="TicketSubject" class="col-md-2 col-form-label text-md-end text-start"><strong>Subject</strong></label>
                                 <div class="col-md-4">
@@ -71,13 +53,13 @@
                             </div>
 
                             <div class="mb-3 row">
-                                <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Assets</strong></label>
+                                <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Asset</strong></label>
                                 <div class="col-md-4">
                                   <select class="form-control @error('TicketAssetId') is-invalid @enderror " aria-label="Assets" id="TicketAssetId" name="TicketAssetId"  required>
                                    <option>Select Asset </option>
                                         @forelse ($assets as $asset)
                                             <option value="{{  $asset->AssetId }}" {{ (isset($ticket) && $ticket->TicketAssetId  == $asset->AssetId) ? 'selected' : '' }}>
-                                                {{ $asset->AssetName }}
+                                                {{ $asset->AssetName }} - {{  $asset->AssetId }}
                                             </option>                                         
                                             @empty                               
                                         @endforelse
@@ -126,7 +108,6 @@
                                 </div>
                             </div>
                             
-
                             <div class="m-4 row">
                                 <input type="submit" class="offset-md-2 btn btn-primary" value="Update Ticket">
                             </div>
@@ -140,38 +121,4 @@
 </section>
 
 @endsection
-@push('scripts')
-    <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2();
-        });
-    </script>
-     <script>
-        // On page load, check if there's a saved value for the checkbox (assuming "checked" state is what's stored)
-        document.addEventListener('DOMContentLoaded', function() {
-        var isChecked = localStorage.getItem('toggleCheckbox') === 'true';
-        document.getElementById('toggleCheckbox').checked = isChecked;
-        toggleContent(isChecked); // Call the toggle function on page load
-        });
 
-        document.getElementById('toggleCheckbox').addEventListener('change', function() {
-        var isChecked = this.checked;
-        localStorage.setItem('toggleCheckbox', isChecked); // Save the checkbox state
-        toggleContent(isChecked);
-        });
-
-        function toggleContent(isChecked) {
-        if (isChecked) {
-            document.getElementById('checkedContent').style.display = 'flex';
-            document.getElementById('uncheckedContent').style.display = 'none';
-        } else {
-            document.getElementById('checkedContent').style.display = 'none';
-            document.getElementById('uncheckedContent').style.display = 'flex';
-        }
-        }
-
-
-    </script>
-
-@endpush

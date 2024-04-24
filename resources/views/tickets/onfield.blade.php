@@ -1,8 +1,5 @@
 @extends('layouts.back')
 @section('title', 'TicketInfo')
-@push('styles')
-<link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
-@endpush
 @section('content')
 <section class="section">
 	<div class="section-header">
@@ -83,35 +80,13 @@
 										<strong>{{ $allocation->Instruction }}</strong>
 									</td>
 								</tr>
-
-								<!-- <tr>
-									<td><span><label for="name" class="p-3"><strong>Comments :</strong></label>
-											<input type="text" class="form-control" name="Comments" id="Comments" placeholder="Comments here!!"></span>
-									</td>
-
-								</tr> -->
 							</tbody>
-
-
 						</table>
-						<!-- <button type="submit" class="btn btn-primary m-3">Submit</button>
-						<a href="{{ url()->previous() }}" class="btn btn-danger m-3">Cancel</a> -->
 					</form>
-
 				</div>
 			</div>
 		</div>
 	</div>
 
-
 </section>
 @endsection
-@push('scripts')
-<script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
-<script>
-	$(document).ready(function() {
-		$('.select2').select2();
-	});
-</script>
-
-@endpush
