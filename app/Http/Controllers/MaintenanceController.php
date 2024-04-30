@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 
-
-
 class MaintenanceController extends Controller
 {
 

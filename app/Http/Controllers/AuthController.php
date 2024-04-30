@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Staff;
-use Illuminate\Database\QueryException;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -31,12 +31,12 @@ class AuthController extends Controller
 			'email' => ['required', 'string', 'email', 'max:255'],
 			'password' => ['required', 'string', 'min:8', 'confirmed'],
 		]);
-		
+
 		try {
 			$customerExists = Customer::where('email', $validatedData['email'])->exists();
 			$staff = Staff::where('email', $validatedData['email'])->first();
-			$role = $staff ? $staff->role : 4; 
-			
+			$role = $staff ? $staff->role : 4;
+
 			if (!$customerExists && !$staff) {
 				return back()->with('info', 'Only existing customers or staffs can register.')->withInput();
 			}
@@ -47,7 +47,7 @@ class AuthController extends Controller
 				'role' => $role,
 			]);
 			return redirect('/')->with('success', 'Your Registration has been successful.');
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return back()->with(['info', 'Registration failed due to a technical issue. Please try again.']);
 		}
 	}
@@ -68,14 +68,19 @@ class AuthController extends Controller
 			'password' => ['required'],
 		]);
 
-		$user = User::where('email', $Credentials['email'])->first();
+		try {
 
-		if ($user && $Credentials['password'] == $user->password) {
-			Auth::login($user);
-			$route = $this->redirectDash();
-			return redirect($route)->with('Success', 'Congratulation!!, You are Succesfully Login');
-		} else {
-			return back()->with('error', 'Incorrect Username or Password')->withInput();
+			$user = User::where('email', $Credentials['email'])->first();
+
+			if ($user && $Credentials['password'] == $user->password) {
+				Auth::login($user);
+				$route = $this->redirectDash();
+				return redirect($route)->with('Success', 'Congratulation!!, You are Succesfully Login');
+			} else {
+				return back()->with('error', 'Incorrect Username or Password')->withInput();
+			}
+		} catch (Exception) {
+			return redirect('/');
 		}
 	}
 
