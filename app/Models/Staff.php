@@ -2,10 +2,12 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Staff extends Model
 {
 
+    use Notifiable;
 	protected $table = 'staffs';
 	protected $primaryKey = 'StaffId';
     /**

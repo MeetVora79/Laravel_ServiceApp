@@ -16,8 +16,8 @@ use App\Http\Controllers\FieldinfoController;
 Route::get('/register', [AuthController::class, 'loadRegister']);
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::get('/', [AuthController::class, 'loadLogin']);
-// Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'loadLogin']);
+Route::post('/user/login', [AuthController::class, 'login'])->name('login');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['web', 'isAdmin']], function () {
@@ -116,6 +116,7 @@ Route::group([], function () {
     Route::delete('/Allocation/delete', [App\Http\Controllers\TicketController::class, 'delete'])->name('tickets.allocationDelete');
     Route::get('/update/{ticket}/status/{status}', [App\Http\Controllers\TicketController::class, 'updateStatus'])->name('update.status');
     Route::get('/change/{ticket}/{status}', [App\Http\Controllers\FieldinfoController::class, 'statusUpdate'])->name('changeStatus');
+    Route::get('/change/{ticket}/mystatus/{status}', [App\Http\Controllers\FieldinfoController::class, 'myStatusUpdate'])->name('myStatusChange');
 });
 
 

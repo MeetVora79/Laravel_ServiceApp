@@ -11,9 +11,10 @@ use App\Models\Allocation;
 use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;   
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 
 
@@ -241,15 +242,67 @@ class TicketController extends Controller
         return view('tickets.myallocation', compact('allocation', 'nextDirection'));
     }
 
-    public function assigneestore(Request $request): RedirectResponse
+    public function assigneestore(Request $request, Allocation $allocation): RedirectResponse
     {
-        $input = $request->all();
         try {
-            Allocation::create($input);
+            $allocation->TicketId = $request->TicketId;
+            $allocation->AssignId = $request->AssignId;
+            $allocation->ServiceDate = $request->ServiceDate;
+            $allocation->TimeSlot = $request->TimeSlot;
+            $allocation->Instruction = $request->Instruction;
+            $allocation->save();
+
+            $this->sendTicketAllocationEmail($allocation);
+            $this->sendTicketAllocationUserEmail($allocation);
+
             return redirect()->route('tickets.allocation')->withSuccess('Ticket-Allocation is Created Successfully');
         } catch (Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
+    }
+
+    protected function sendTicketAllocationEmail(Allocation $allocation)
+    {
+
+        $to_email = 'meetvora792@gmail.com';
+
+        $data = [
+            'name' => $allocation->staff->StaffName,
+            'id' => $allocation->TicketId,
+            'subject' => $allocation->ticket->TicketSubject,
+            'description' => $allocation->ticket->TicketDescription,
+            'servicedate' => $allocation->ServiceDate,
+            'time' => $allocation->TimeSlot,
+            'instruction' => $allocation->Instruction,
+            'body' => "A ticket has been allocated to you with the following details:"
+        ];
+
+        Mail::send('mailAllocation', $data, function ($message) use ($to_email, $allocation) {
+            $message->from('meetvora792@gmail.com', 'Admin');
+            $message->to($to_email)->subject("Ticket Allocation: {$allocation->ticket->TicketSubject}");
+        });
+    }
+
+    protected function sendTicketAllocationUserEmail(Allocation $allocation)
+    {
+
+        $to_email = 'meetvora792@gmail.com';
+
+        $data = [
+            'name' => $allocation->ticket->customer->firstname .' '. $allocation->ticket->customer->lastname,
+            'id' => $allocation->TicketId,
+            'subject' => $allocation->ticket->TicketSubject,
+            'description' => $allocation->ticket->TicketDescription,
+            'engineer' => $allocation->staff->StaffName,
+            'servicedate' => $allocation->ServiceDate,
+            'time' => $allocation->TimeSlot,
+            'body' => "Your ticket has been allocated to engineer with the following details:"
+        ];
+
+        Mail::send('mailAllocationUser', $data, function ($message) use ($to_email, $allocation) {
+            $message->from('meetvora792@gmail.com', 'Admin');
+            $message->to($to_email)->subject("Ticket Allocated: {$allocation->ticket->TicketSubject}");
+        });
     }
 
     public function assigneeupdate(Request $request, Allocation $AllocationId): RedirectResponse
@@ -278,6 +331,9 @@ class TicketController extends Controller
             $request->Attachments->move(public_path('uploads'), $originalFileName);
             $ticket->Attachments = $originalFileName;
             $ticket->save();
+
+            $this->sendTicketCreationEmail($ticket);
+
             return redirect()->route('tickets.index')
                 ->with('success', 'Your Ticket is Created Successfully.');
         } catch (Exception $e) {
@@ -297,12 +353,38 @@ class TicketController extends Controller
             $request->Attachments->move(public_path('uploads'), $originalFileName);
             $ticket->Attachments = $originalFileName;
             $ticket->save();
+
+            // Send email
+            $this->sendTicketCreationEmail($ticket);
+
             return redirect()->route('mytickets')
                 ->with('success', 'Your Ticket is Created Successfully.');
         } catch (Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
     }
+
+    protected function sendTicketCreationEmail(Ticket $ticket)
+    {
+
+        $to_email = 'meetvora792@gmail.com';
+
+        $fromAddress = $ticket->customer->email ?? 'user@gmail.com';
+        $fromName = $ticket->customer->firstname . ' ' . $ticket->customer->lastname;
+
+        $data = [
+            'name' => $fromName,
+            'subject' => $ticket->TicketSubject,
+            'description' => $ticket->TicketDescription,
+            'body' => "A new ticket has been created with the following details:"
+        ];
+
+        Mail::send('mail', $data, function ($message) use ($to_email, $fromAddress, $fromName, $ticket) {
+            $message->from($fromAddress, $fromName);
+            $message->to($to_email)->subject("New Ticket: {$ticket->TicketSubject}");
+        });
+    }
+
 
     /**
      * Display the specified resource.

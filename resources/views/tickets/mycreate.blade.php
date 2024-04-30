@@ -53,13 +53,13 @@
                             </div>
 
                             <div class="mb-3 row">
-                                <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Asset Name</strong></label>
+                                <label for="TicketAssetId" class="col-md-2 col-form-label text-md-end text-start"><strong>Asset</strong></label>
                                 <div class="col-md-4">
                                   <select class="form-control @error('TicketAssetId') is-invalid @enderror " aria-label="Assets" id="TicketAssetId" name="TicketAssetId"  required>
                                    <option>Select Asset </option>
                                         @forelse ($assets as $asset)
                                             <option value="{{  $asset->AssetId }}" {{ (isset($ticket) && $ticket->TicketAssetId  == $asset->AssetId) ? 'selected' : '' }}>
-                                                {{ $asset->AssetName }}
+                                                {{ $asset->AssetName }} - {{  $asset->AssetId }}
                                             </option>                                         
                                             @empty                               
                                         @endforelse
@@ -120,34 +120,5 @@
     </div>
 </section>
 @endsection
-@push('scripts')
 
-    <script>
-        // On page load, check if there's a saved value for the checkbox (assuming "checked" state is what's stored)
-        document.addEventListener('DOMContentLoaded', function() {
-        var isChecked = localStorage.getItem('toggleCheckbox') === 'true';a
-        document.getElementById('toggleCheckbox').checked = isChecked;
-        toggleContent(isChecked); // Call the toggle function on page load
-        });
-
-        document.getElementById('toggleCheckbox').addEventListener('change', function() {
-        var isChecked = this.checked;
-        localStorage.setItem('toggleCheckbox', isChecked); // Save the checkbox state
-        toggleContent(isChecked);
-        });
-
-        function toggleContent(isChecked) {
-        if (isChecked) {
-            document.getElementById('checkedContent').style.display = 'flex';
-            document.getElementById('uncheckedContent').style.display = 'none';
-        } else {
-            document.getElementById('checkedContent').style.display = 'none';
-            document.getElementById('uncheckedContent').style.display = 'flex';
-        }
-        }
-
-
-    </script>
-
-@endpush
 

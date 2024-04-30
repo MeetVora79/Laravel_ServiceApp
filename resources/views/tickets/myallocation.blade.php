@@ -32,23 +32,23 @@
 	}
 
 	.search-box {
-    position: relative;
-    display: inline-block;
-  }
+		position: relative;
+		display: inline-block;
+	}
 
-  .clear-btn {
-    position: absolute;
-    right: 60px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-  }
+	.clear-btn {
+		position: absolute;
+		right: 60px;
+		top: 50%;
+		transform: translateY(-50%);
+		cursor: pointer;
+		background-color: transparent;
+		border: none;
+	}
 
-  .clear-btn:hover {
-    color: red;
-  }
+	.clear-btn:hover {
+		color: red;
+	}
 </style>
 @endpush
 @section('content')
@@ -119,9 +119,10 @@
 												<ul class="dropdown-menu">
 													<li><a href="#" class="dropdown-item my-2">Change Status</a>
 														<ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
-															<li><a href="{{ route('changeStatus',['ticket' => $allocate->TicketId, 'status' => 'open']) }}" class="dropdown-item my-2">Open</a></li>
-															<li><a href="{{ route('changeStatus',['ticket' => $allocate->TicketId, 'status' => 'closed']) }}" class="dropdown-item my-2">Closed</a></li>
-															<li><a href="{{ route('changeStatus',['ticket' => $allocate->TicketId, 'status' => 'resolved']) }}" class="dropdown-item my-2">Resolved</a></li>
+															<li><a href="{{ route('myStatusChange',['ticket' => $allocate->TicketId, 'status' => 'open']) }}" class="dropdown-item my-2">Open</a></li>
+															<li><a href="{{ route('myStatusChange',['ticket' => $allocate->TicketId, 'status' => 'resolved']) }}" class="dropdown-item my-2">Resolved</a></li>
+															<li><a href="{{ route('myStatusChange',['ticket' => $allocate->TicketId, 'status' => 'closed']) }}" class="dropdown-item my-2">Closed</a></li>
+
 														</ul>
 													</li>
 													<!-- <li><a href="{{ route('tickets.index') }}" class="dropdown-item my-2">Merge Tickets</a></li>

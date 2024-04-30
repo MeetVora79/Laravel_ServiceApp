@@ -31,13 +31,13 @@ class AuthController extends Controller
 			'email' => ['required', 'string', 'email', 'max:255'],
 			'password' => ['required', 'string', 'min:8', 'confirmed'],
 		]);
-
+		
 		try {
 			$customerExists = Customer::where('email', $validatedData['email'])->exists();
-			$staffExists = Staff::where('email', $validatedData['email'])->exists();
 			$staff = Staff::where('email', $validatedData['email'])->first();
 			$role = $staff ? $staff->role : 4; 
-			if (!$customerExists && !$staffExists) {
+			
+			if (!$customerExists && !$staff) {
 				return back()->with('info', 'Only existing customers or staffs can register.')->withInput();
 			}
 			User::create([
@@ -47,7 +47,7 @@ class AuthController extends Controller
 				'role' => $role,
 			]);
 			return redirect('/')->with('success', 'Your Registration has been successful.');
-		} catch (QueryException $e) {
+		} catch (\Exception $e) {
 			return back()->with(['info', 'Registration failed due to a technical issue. Please try again.']);
 		}
 	}

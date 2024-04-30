@@ -13,6 +13,7 @@ use App\Models\Schedule;
 use App\Models\Servicedate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 
 
@@ -82,7 +83,7 @@ class MaintenanceController extends Controller
                 foreach ($columns as $index => $column) {
                     $method = $index === 0 ? 'where' : 'orWhere';
                     $query->$method($column, 'LIKE', '%' . $searchTerm . '%');
-                }   
+                }
                 $query->orWhereHas('maintenancestatus', function ($subQuery) use ($searchTerm) {
                     $subQuery->where('StatusName', 'LIKE', '%' . $searchTerm . '%');
                 });
@@ -90,7 +91,7 @@ class MaintenanceController extends Controller
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
                     $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
                         $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                            ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                     });
                 });
                 $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
@@ -137,11 +138,58 @@ class MaintenanceController extends Controller
         ]);
 
         try {
-            Schedule::create($validatedData);
+            $schedule =  Schedule::create($validatedData);
+
+            $this->sendAssetMaintenanceEmail($schedule);
+            $this->sendAssetMaintenanceUserEmail($schedule);
+
             return redirect()->route('maintenance.scheduled')->with('success', 'Maintenance for your asset is scheduled successfully');
         } catch (\Exception $e) {
             return back()->with('error', 'Error: ' . $e->getMessage())->withInput();
         }
+    }
+
+    protected function sendAssetMaintenanceEmail(Schedule $schedule)
+    {
+
+        $to_email = 'meetvora792@gmail.com';
+
+        $data = [
+            'name' => $schedule->staff->StaffName,
+            'id' => $schedule->AssetId,
+            'assetname' => $schedule->asset->AssetName,
+            'description' => $schedule->asset->AssetDescription,
+            'location' => $schedule->asset->AssetLocation,
+            'servicedate' => $schedule->ServiceDate,
+            'instruction' => $schedule->Instruction,
+            'body' => "An Maintenance is Scheduled to you with the following details:"
+        ];
+
+        Mail::send('mailMaintenance', $data, function ($message) use ($to_email, $schedule) {
+            $message->from('meetvora792@gmail.com', 'Admin');
+            $message->to($to_email)->subject("Maintenance Scheduled: {$schedule->asset->AssetName}");
+        });
+    }
+
+    protected function sendAssetMaintenanceUserEmail(Schedule $schedule)
+    {
+
+        $to_email = 'meetvora792@gmail.com';
+
+        $data = [
+            'name' => $schedule->asset->customer->firstname . ' ' . $schedule->asset->customer->lastname,
+            'id' => $schedule->AssetId,
+            'assetname' => $schedule->asset->AssetName,
+            'description' => $schedule->asset->AssetDescription,
+            'engineer' => $schedule->staff->StaffName,
+            'servicedate' => $schedule->ServiceDate,
+            'body' => "Your Maintenance is Scheduled to engineer with the following details:"
+        ];
+
+        Mail::send('mailMaintenanceUser', $data, function ($message) use ($to_email, $schedule) {
+            $message->from('meetvora792@gmail.com', 'Admin');
+            $message->to($to_email)->subject("Your Maintenance Scheduled: {$schedule->asset->AssetName}");
+        });
     }
 
     public function scheduled(Request $request): view
@@ -165,7 +213,7 @@ class MaintenanceController extends Controller
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
                     $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
                         $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                            ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                     });
                 });
                 $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
@@ -219,7 +267,7 @@ class MaintenanceController extends Controller
                     $subQuery->where('AssetName', 'LIKE', '%' . $searchTerm . '%');
                     $subQuery->orWhereHas('customer', function ($nestedQuery) use ($searchTerm) {
                         $nestedQuery->where('firstname', 'LIKE', '%' . $searchTerm . '%')
-                                    ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
+                            ->orWhere('lastname', 'LIKE', '%' . $searchTerm . '%');
                     });
                 });
                 $query->orWhereHas('staff', function ($subQuery) use ($searchTerm) {
@@ -229,7 +277,7 @@ class MaintenanceController extends Controller
         }
 
         $scheduleQuery->orderBy($sort, $direction);
-        $scheduleQuery = Schedule::where('AssignedId',$TicketStaffId)->paginate(10);
+        $scheduleQuery = Schedule::where('AssignedId', $TicketStaffId)->paginate(10);
         $schedules =  $scheduleQuery;
 
         $nextDirection = $direction == 'asc' ? 'desc' : 'asc';

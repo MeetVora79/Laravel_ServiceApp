@@ -33,6 +33,20 @@ class FieldinfoController extends Controller
 
         return redirect()->route('tickets.allocation');
     }
+    public function myStatusUpdate($TicketId, $status): RedirectResponse
+    {
+        $statusMappings = [
+            'open' => 1, 
+            'closed' => 2, 
+            'resolved' => 3, 
+        ];
+    
+        $ticket = Ticket::findOrFail($TicketId);
+        $ticket->TicketStatusId = $statusMappings[$status] ?? null;
+        $ticket->save();
+
+        return redirect()->route('myallocation');
+    }
  
 
 }
